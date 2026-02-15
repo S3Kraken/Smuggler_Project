@@ -10,7 +10,9 @@ public class PlayerMovement : MonoBehaviour
     private float movex, movey;
     public float speed = 5;
     private float health = 100;
-    bool isGrounded;
+
+    public ContactFilter2D groundFilter; // Set in Inspector (layer & angle)
+    bool IsGrounded => rb.IsTouching(groundFilter);
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,8 +34,10 @@ public class PlayerMovement : MonoBehaviour
     }
     void OnJump()
     {
+        if (IsGrounded)
+        {
             rb.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
-            isGrounded = false;
+        }
     }
     public void Heal(float amount)
     {
