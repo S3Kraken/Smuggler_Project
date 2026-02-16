@@ -23,7 +23,6 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 move = new Vector3(movex, movey, 0);
-        //move = tf.TransformDirection(move);
         tf.position += move * speed * Time.fixedDeltaTime;
     }
     private void OnMove(InputValue movementValue)
