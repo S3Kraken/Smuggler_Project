@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit2D hit; // Store the result of the raycast
     private float slopeMultiplier = 10000; // Adjust this value to control how much the slope affects speed
     bool isOnSlope = false; // Track if the player is currently on a slope
-    //public TMPro.TextMeshProUGUI onSlopeText;
+    public TMPro.TextMeshProUGUI onSlopeText;
     public LayerMask groundLayer; // Set this to the layer(s) that represent the ground in your game
 
     public bool canClimb = false;
@@ -37,36 +37,42 @@ public class PlayerMovement : MonoBehaviour
     {
         tf = GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
-        //onSlopeText = GameObject.Find("Slope (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
+        onSlopeText = GameObject.Find("Slope (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText = GameObject.Find("ChangeWeightButton (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText.text = weight;
     }
     void FixedUpdate()
     {
         //onSlopeText.text = "On Slope: " + isOnSlope;
+        onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
         slopeBoostTimer += Time.deltaTime;
         if (slopeBoostTimer > 1f)
         {
             switch (weight)
             {
-                case "low":
-                    speed = lowWeightSpeed;
-                    break;
-                case "med":
-                    speed = medWeightSpeed;
-                    break;
-                case "high":
-                    speed = highWeightSpeed;
-                    break;
-                default:
-                    speed = medWeightSpeed;
-                    break;
+                case "low": speed = lowWeightSpeed; break;
+                case "med": speed = medWeightSpeed; break;
+                case "high": speed = highWeightSpeed; break;
             }
         }
-        
+
+        float targetX = movex * speed;
+
+        float accel = IsGrounded ? 40f : 20f;
 
         Vector3 move = new Vector3(movex, movey, 0);
-        tf.position += move * speed * Time.fixedDeltaTime;
+
+        if (movex == 0f)
+        {
+            // Smoothly decelerate to 0
+            rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime), rb.linearVelocity.y);
+        }
+        else
+        {
+            // Smoothly accelerate to target speed
+            rb.linearVelocity = new Vector2(
+                Mathf.MoveTowards(rb.linearVelocity.x, targetX, 40f * Time.fixedDeltaTime), rb.linearVelocity.y);
+        }
 
         if (IsGrounded)
         {
@@ -89,14 +95,18 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
         movex = movementVector.x;
-        //if (canClimb)
-        //{
-        //    movey = 2;
-        //}
-        //else
-        //{
-        //    movey = 0;
-        //}
+        if (canClimb && movementVector.y != 0)
+        {
+            movey = movementVector.y;
+            rb.gravityScale = 0f; // Disable gravity while climbing
+
+        }
+        else
+        {
+            movey = 0;
+            rb.gravityScale = 2f; // Re-enable gravity when not climbing
+        }
+
     }
     void OnJump()
     {
@@ -164,19 +174,24 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.name == "Ladders")
         {
             canClimb = true;
-            //if w key is press go up
-            if (Input.GetKey(KeyCode.W)){
-                movey = 2;
-            }
-            else
-            {
-                movey = 0;
-            }
+            //if (Input.GetKey(KeyCode.W)){
+            //    if (canClimb)
+            //    {
+            //        // Override vertical movement with W/S input
+            //        float climbSpeed = 8f;  // tweak this
+            //        float climbY = movey * climbSpeed;  // movey from Input (W=1, S=-1)
+
+            //        rb.linearVelocity = new Vector2(rb.linearVelocity.x, climbY);
+            //        rb.gravityScale = 0f;  // disable gravity while climbing
+            //    }
+            //}
         }
         else
         {
             canClimb = false;
-            movey = 0;
+            //movey = 0;
+            //rb.gravityScale = 1f;  // re-enable gravity when off ladder
+
         }
     }
 }
