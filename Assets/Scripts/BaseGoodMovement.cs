@@ -2,10 +2,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using UnityEngine.Windows;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using static UnityEngine.UI.Image;
 
-public class PlayerMovement : MonoBehaviour
+public class BaseGoodMovement : MonoBehaviour
 {
     private Transform tf;
     private Rigidbody2D rb;
@@ -35,12 +36,13 @@ public class PlayerMovement : MonoBehaviour
 
 
     [SerializeField] float groundCheckRadius = 20f;
-    [SerializeField] float groundCheckDistance = 50f;
+    [SerializeField] float groundCheckDistance = 1f;
 
     bool onSlope;
     float slopeAngle;
     Transform groundCheckEmpty;
 
+    Vector2 slopeNormalPerp;
     void Start()
     {
         tf = GetComponent<Transform>();
@@ -70,59 +72,14 @@ public class PlayerMovement : MonoBehaviour
         float targetX = movex * speed;
 
 
-        if (onSlope)
+
+        if (IsGrounded)
         {
-            RaycastHit2D hit = Physics2D.Raycast(groundCheckEmpty.position, Vector2.down, groundCheckDistance, groundLayer);
-            if (hit.collider != null)
-            {
-                Vector2 groundNormal = hit.normal;
-                float slopeSteepness = Vector2.Dot(groundNormal, Vector2.up);  // 1=flat, 0=90°
-
-                if (slopeSteepness < .95f)  // On slope
-                {
-                    // Movement direction = perpendicular to normal (along slope surface)
-                    Vector2 slopeDirection = Vector2.Perpendicular(groundNormal).normalized;
-
-                    // Face correct direction (left/right slope)
-                    if (Vector2.Dot(slopeDirection, Vector2.right) * movex < 0)
-                        slopeDirection = -slopeDirection;
-
-                    Vector2 slopeVelocity = slopeDirection * speed * Mathf.Abs(movex);
-
-                    rb.linearVelocity = new Vector2(
-                        Mathf.MoveTowards(rb.linearVelocity.x, slopeVelocity.x, 40f * Time.fixedDeltaTime),
-                        rb.linearVelocity.y);
-
-                    Debug.Log($"Moving on slope with target velocity: {slopeVelocity.x}");
-                    // Stick to surface
-                    //Vector2 targetPos = rb.position;
-                    //targetPos.y = hit.point.y + 0.1f;
-                    //rb.position = targetPos;
-                }
-                else
-                {
-                    // Flat ground - original code
-                    if (movex == 0f)
-                    {
-                        rb.linearVelocity = new Vector2(
-                            Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime),
-                            rb.linearVelocity.y);
-                    }
-                    else
-                    {
-                        rb.linearVelocity = new Vector2(
-                            Mathf.MoveTowards(rb.linearVelocity.x, targetX, 40f * Time.fixedDeltaTime),
-                            rb.linearVelocity.y);
-                    }
-                }
-            }
+            jumping = false;
         }
-        else
+        if (!onSlope)
         {
-            if (IsGrounded)
-            {
-                jumping = false;
-            }
+            rb.gravityScale = 2f; // Ensure gravity is normal when not on slope
             if (movex == 0f)
             {
                 // Smoothly decelerate to 0
@@ -138,9 +95,53 @@ public class PlayerMovement : MonoBehaviour
                     rb.linearVelocity.y);
             }
         }
+        else if (onSlope && movex == 0f)
+        {
+            rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime), 0f);
+            rb.gravityScale = 0f;
+        }
+        else
+        {
+            rb.gravityScale = 2f; // Ensure gravity is normal when not on slope
+            rb.linearVelocity = new Vector2(
+                speed * slopeNormalPerp.x * -movex,
+                speed * slopeNormalPerp.y * -movex
+            );
+            Debug.Log($"Moving on slope with velocity: {rb.linearVelocity}");
+            Debug.Log($"Slope normal: {slopeNormalPerp}, movex: {movex}");
+        }
+            //    //RaycastHit2D hit = Physics2D.Raycast(groundCheckEmpty.position, Vector2.down, groundCheckDistance, groundLayer);
+            //    //if (hit.collider != null)
+            //    //{
+            //    //    Vector2 groundNormal = hit.normal;
+            //    //    float slopeSteepness = Vector2.Dot(groundNormal, Vector2.up);  // 1=flat, 0=90°
 
+            //    //    if (slopeSteepness < .95f)  // On slope
+            //    //    {
+            //    //        // Movement direction = perpendicular to normal (along slope surface)
+            //    //        Vector2 slopeDirection = Vector2.Perpendicular(groundNormal).normalized;
 
-            CheckGrounded();
+            //    //        // Face correct direction (left/right slope)
+            //    //        if (Vector2.Dot(slopeDirection, Vector2.right) * movex < 0)
+            //    //            slopeDirection = -slopeDirection;
+
+            //    //        Vector2 slopeVelocity = slopeDirection * speed * Mathf.Abs(movex);
+
+            //    //        rb.linearVelocity = new Vector2(
+            //    //            Mathf.MoveTowards(rb.linearVelocity.x, slopeVelocity.x, 40f * Time.fixedDeltaTime),
+            //    //            rb.linearVelocity.y);
+
+            //    //        Debug.Log($"Moving on slope with target velocity: {slopeVelocity.x}");
+            //    //        // Stick to surface
+            //    //        Vector2 targetPos = rb.position;
+            //    //        targetPos.y = hit.point.y + 0.1f;
+            //    //        rb.position = targetPos;
+            //    //    }
+            //    //}
+
+            //}
+
+            GroundAndSlopeDetection();
         //if (IsGrounded)
         //{
         //    float rayDistance = 2f;
@@ -158,14 +159,14 @@ public class PlayerMovement : MonoBehaviour
         //    }
         //}
     }
-
-    void CheckGrounded()
+   
+    void GroundAndSlopeDetection()
     {
         // Start a bit below the center (near feet)
         Vector2 origin = groundCheckEmpty.position;
 
         // 1) Circle downwards to detect ground
-        //RaycastHit2D hit = Physics2D.CircleCast(
+        //    RaycastHit2D hit = Physics2D.CircleCast(
         //    origin,
         //    groundCheckRadius,
         //    Vector2.down,
@@ -186,13 +187,15 @@ public class PlayerMovement : MonoBehaviour
         if (hit.collider != null)
         {
             IsGrounded = true;
+            slopeNormalPerp = Vector2.Perpendicular(hit.normal).normalized;
             //Debug.Log($"Grounded on {hit.collider.name}");
             // Slope info
             slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-            onSlope = slopeAngle > 1f; // small tolerance so flat ground isn�t �slope�
-                                       // Debug.Log($"Hit {hit.collider.name}, angle {slopeAngle}");
-                                       //if (onSlope && !jumping)
-                                       //{
+            onSlope = slopeAngle > 1f;
+            // small tolerance so flat ground isn�t �slope�
+            // Debug.Log($"Hit {hit.collider.name}, angle {slopeAngle}");
+            //if (onSlope && !jumping)
+            //{
             //Vector2 temp = tf.position;
             //temp.y = hit.point.y + 2f; // Adjust 0.5f based on your character's pivot/height
             //tf.position = temp;
@@ -205,13 +208,7 @@ public class PlayerMovement : MonoBehaviour
             slopeAngle = 0f;
         }
     }
-    void OnDrawGizmos()
-    {
-        // Draw circle in Scene view (only works in OnDrawGizmos)
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(groundCheckEmpty.position, groundCheckRadius);
-        Gizmos.DrawCube(groundCheckEmpty.position + Vector3.down * groundCheckDistance, new Vector3(2f, 0.2f, 0)); // visualize boxcast area
-    }
+    
     private void OnMove(InputValue movementValue)
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
@@ -242,7 +239,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (IsGrounded)
         {
-            Debug.Log("Jumping");
             jumping = true;
             rb.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
         }

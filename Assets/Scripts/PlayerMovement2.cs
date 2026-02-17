@@ -92,7 +92,7 @@
 
 //        // Apply as position change (same math as your rb.linearVelocity version)
 //        tf.position += (Vector3)smoothVelocity * Time.fixedDeltaTime;
-    
+
 
 //        if (IsGrounded)
 //        {
