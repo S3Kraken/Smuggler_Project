@@ -18,11 +18,10 @@ public class PlayerMovement : MonoBehaviour
     private float health = 100;
 
     public ContactFilter2D groundFilter; // Set in Inspector (layer & angle)
-    bool IsGrounded => rb.IsTouching(groundFilter);
+    bool IsGrounded;
 
     private RaycastHit2D hit; // Store the result of the raycast
     private float slopeMultiplier = 10000; // Adjust this value to control how much the slope affects speed
-    bool isOnSlope = false; // Track if the player is currently on a slope
     public TMPro.TextMeshProUGUI onSlopeText;
     public LayerMask groundLayer; // Set this to the layer(s) that represent the ground in your game
 
@@ -32,19 +31,31 @@ public class PlayerMovement : MonoBehaviour
     bool slopeBoost = false;
     float slopeBoostTimer = 2f;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    bool jumping = false;
+
+
+    [SerializeField] float groundCheckRadius = 20f;
+    [SerializeField] float groundCheckDistance = 50f;
+
+    bool onSlope;
+    float slopeAngle;
+    Transform groundCheckEmpty;
+
     void Start()
     {
         tf = GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
+        groundCheckEmpty = GameObject.Find("GroundCheckEmpty").GetComponent<Transform>();
         onSlopeText = GameObject.Find("Slope (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText = GameObject.Find("ChangeWeightButton (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText.text = weight;
     }
+
+
     void FixedUpdate()
     {
-        //onSlopeText.text = "On Slope: " + isOnSlope;
-        onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
+        //onSlopeText.text = "On Slope: " + onSlope;
+        //onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
         slopeBoostTimer += Time.deltaTime;
         if (slopeBoostTimer > 1f)
         {
@@ -58,48 +69,117 @@ public class PlayerMovement : MonoBehaviour
 
         float targetX = movex * speed;
 
-        float accel = IsGrounded ? 40f : 20f;
-
-        Vector3 move = new Vector3(movex, movey, 0);
-
+        if (IsGrounded)
+        {
+            jumping = false;
+        }
         if (movex == 0f)
         {
             // Smoothly decelerate to 0
-            rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime), rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(
+                Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime),  // ground decel
+                rb.linearVelocity.y);
         }
         else
         {
-            // Smoothly accelerate to target speed
+            //Smoothly accelerate to target speed
             rb.linearVelocity = new Vector2(
-                Mathf.MoveTowards(rb.linearVelocity.x, targetX, 40f * Time.fixedDeltaTime), rb.linearVelocity.y);
+                Mathf.MoveTowards(rb.linearVelocity.x, targetX, 40f * Time.fixedDeltaTime),  // accel
+                rb.linearVelocity.y);
         }
 
-        if (IsGrounded)
+
+        CheckGrounded();
+        //if (IsGrounded)
+        //{
+        //    float rayDistance = 2f;
+        //    Vector2 origin = transform.position;
+
+        //    Debug.DrawRay(origin, Vector2.down * rayDistance, Color.green);
+
+        //    RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayDistance, groundLayer);
+
+        //    if (hit.collider != null)
+        //    {
+        //        float angle = Vector2.Angle(hit.normal, Vector2.up);
+        //        Debug.Log("Hit: " + hit.collider.name + " angle: " + angle);
+        //        onSlope = angle > 0; // Consider it a slope if the angle is greater than 0
+        //    }
+        //}
+    }
+
+    void CheckGrounded()
+    {
+        // Start a bit below the center (near feet)
+        Vector2 origin = groundCheckEmpty.position;
+
+        // 1) Circle downwards to detect ground
+        //RaycastHit2D hit = Physics2D.CircleCast(
+        //    origin,
+        //    groundCheckRadius,
+        //    Vector2.down,
+        //    groundCheckDistance,
+        //    groundLayer
+        //);
+
+        RaycastHit2D hit = Physics2D.BoxCast(
+            origin,
+            new Vector2(2f, 0.2f),
+            0,
+            Vector2.down,
+            groundCheckDistance,
+            groundLayer
+        );
+
+        // Debug visualize
+        Debug.DrawRay(origin, Vector2.down * (groundCheckRadius + groundCheckDistance), Color.green);
+
+        if (hit.collider != null)
         {
-            float rayDistance = 2f;
-            Vector2 origin = transform.position;
-
-            Debug.DrawRay(origin, Vector2.down * rayDistance, Color.green);
-
-            RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayDistance, groundLayer);
-
-            if (hit.collider != null)
-            {
-                float angle = Vector2.Angle(hit.normal, Vector2.up);
-                Debug.Log("Hit: " + hit.collider.name + " angle: " + angle);
-                isOnSlope = angle > 0; // Consider it a slope if the angle is greater than 0
-            }
+            IsGrounded = true;
+            Debug.Log($"Grounded on {hit.collider.name}");
+            // Slope info
+            slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+            onSlope = slopeAngle > 1f; // small tolerance so flat ground isn�t �slope�
+                                       // Debug.Log($"Hit {hit.collider.name}, angle {slopeAngle}");
+                                       //if (onSlope && !jumping)
+                                       //{
+            Vector2 temp = tf.position;
+            temp.y = hit.point.y + 2f; // Adjust 0.5f based on your character's pivot/height
+            tf.position = temp;
+            //}
         }
+        else
+        {
+            IsGrounded = false;
+            onSlope = false;
+            slopeAngle = 0f;
+        }
+    }
+    void OnDrawGizmos()
+    {
+        // Draw circle in Scene view (only works in OnDrawGizmos)
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(groundCheckEmpty.position, groundCheckRadius);
+        Gizmos.DrawCube(groundCheckEmpty.position + Vector3.down * groundCheckDistance, new Vector3(2f, 0.2f, 0)); // visualize boxcast area
     }
     private void OnMove(InputValue movementValue)
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
         movex = movementVector.x;
+
         if (canClimb && movementVector.y != 0)
         {
             movey = movementVector.y;
             rb.gravityScale = 0f; // Disable gravity while climbing
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 5 * movementVector.y); // Stop any vertical velocity from physics while climbing
 
+        }
+        else if (canClimb && movementVector.y == 0)
+        {
+            movey = 0;
+            rb.gravityScale = 0f; // Keep gravity disabled when not moving vertically on the ladder
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0); // Stop any vertical velocity from physics while on the ladder
         }
         else
         {
@@ -107,18 +187,21 @@ public class PlayerMovement : MonoBehaviour
             rb.gravityScale = 2f; // Re-enable gravity when not climbing
         }
 
+
     }
     void OnJump()
     {
         if (IsGrounded)
         {
+            Debug.Log("Jumping");
+            jumping = true;
             rb.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
         }
     }
 
     void OnSlide()
     {
-        if (isOnSlope)
+        if (onSlope)
         {
             speed = 20f; // Increase speed when sliding down a slope
             slopeBoost = true;
@@ -168,30 +251,18 @@ public class PlayerMovement : MonoBehaviour
         }
         ChangeWeightButtonText.text = weight;
     }
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == "Ladders")
+            canClimb = true;
+    }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.name == "Ladders")
         {
-            canClimb = true;
-            //if (Input.GetKey(KeyCode.W)){
-            //    if (canClimb)
-            //    {
-            //        // Override vertical movement with W/S input
-            //        float climbSpeed = 8f;  // tweak this
-            //        float climbY = movey * climbSpeed;  // movey from Input (W=1, S=-1)
-
-            //        rb.linearVelocity = new Vector2(rb.linearVelocity.x, climbY);
-            //        rb.gravityScale = 0f;  // disable gravity while climbing
-            //    }
-            //}
-        }
-        else
-        {
             canClimb = false;
-            //movey = 0;
-            //rb.gravityScale = 1f;  // re-enable gravity when off ladder
-
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Min(rb.linearVelocity.y, 0f));
         }
     }
 }
