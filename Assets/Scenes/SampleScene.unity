@@ -1424,16 +1424,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e54c9d2db3d27940ba935b82f5f3f77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tf: {fileID: 0}
-  rb: {fileID: 0}
-  movex: 0
-  movey: 0
-  speed: 5
-  weight: med
-  lowWeightSpeed: 12.5
-  medWeightSpeed: 10
-  highWeightSpeed: 5
-  health: 100
   groundFilter:
     useTriggers: 0
     useLayerMask: 0
@@ -1447,17 +1437,13 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
-  slopeMultiplier: 10000
-  isOnSlope: 0
   onSlopeText: {fileID: 0}
   groundLayer:
     m_Bits: 0
   canClimb: 0
   ChangeWeightButtonText: {fileID: 0}
-  slopeBoost: 0
-  slopeBoostTimer: 2
-  jumping: 0
-  smoothVelocity: {x: 0, y: 0}
+  groundCheckRadius: 20
+  groundCheckDistance: 0
 --- !u!70 &108417890
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -18765,10 +18751,10 @@ GameObject:
   - component: {fileID: 1751667830}
   - component: {fileID: 1751667836}
   - component: {fileID: 1751667835}
+  - component: {fileID: 1751667831}
   - component: {fileID: 1751667834}
   - component: {fileID: 1751667833}
   - component: {fileID: 1751667832}
-  - component: {fileID: 1751667831}
   m_Layer: 0
   m_Name: Platforms(Oneway)
   m_TagString: Untagged
@@ -18806,7 +18792,7 @@ PlatformEffector2D:
   m_RotationalOffset: 0
   m_UseOneWay: 1
   m_UseOneWayGrouping: 0
-  m_SurfaceArc: 210
+  m_SurfaceArc: 180
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 0
@@ -20119,11 +20105,12 @@ MonoBehaviour:
   onSlopeText: {fileID: 0}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
-  canClimb: 0
+    m_Bits: 1
+  canClimb: 1
   ChangeWeightButtonText: {fileID: 0}
-  groundCheckRadius: 20
+  groundCheckRadius: 1
   groundCheckDistance: 1
+  useTransform: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
