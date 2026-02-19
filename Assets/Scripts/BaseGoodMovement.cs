@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Linq;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -15,7 +14,6 @@ public class BaseGoodMovement : MonoBehaviour
     private Transform tf;
     private Rigidbody2D rb;
     private float movex, movey;
-    float oldSpeed;
     float speed = 5;
     string weight = "med"; // "low", "med", "high"
     float lowWeightSpeed = 12.5f;
@@ -339,10 +337,6 @@ public class BaseGoodMovement : MonoBehaviour
         }
     }
 
-    //void OnSlide(InputValue value)
-    //{
-    //    sliding = value.isPressed;  // true when held, false when released
-    //}
     public void Heal(float amount)
     {
         health += amount;
@@ -380,6 +374,17 @@ public class BaseGoodMovement : MonoBehaviour
             weight = "low";
         }
         ChangeWeightButtonText.text = weight;
+
+        if (!sliding)
+        {
+            switch (weight)
+            {
+                case "low": speed = lowWeightSpeed; break;
+                case "med": speed = medWeightSpeed; break;
+                case "high": speed = highWeightSpeed; break;
+            }
+        }
+        
     }
     void OnTriggerEnter2D(Collider2D collision)
     {

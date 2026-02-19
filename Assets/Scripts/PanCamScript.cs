@@ -7,6 +7,7 @@ public class PanCamScript : MonoBehaviour
     Vector2 smoothVelocity = Vector2.zero;
     float speed = 30;
     public GameObject mainCam;
+    GameObject player;
 
     public InputActionAsset inputActions;
     private InputAction moveAction;
@@ -15,9 +16,10 @@ public class PanCamScript : MonoBehaviour
     {
 
         moveAction = inputActions.FindAction("Move");  // "Move" = your action name
+        player = GameObject.Find("Player");
         moveAction.Enable();
     }
-  
+
     private void FixedUpdate()
     {
         //if (moveAction.WasPressedThisFrame()) Debug.Log("Move pressed!");
@@ -72,6 +74,10 @@ public class PanCamScript : MonoBehaviour
 
     public void ResetSpeed()
     {
-       smoothVelocity = Vector2.zero;
+        smoothVelocity = Vector2.zero;
+        this.transform.position = new Vector3(
+        player.transform.position.x,
+        player.transform.position.y,
+        this.transform.position.z);
     }
 }
