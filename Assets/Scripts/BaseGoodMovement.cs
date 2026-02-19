@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -50,6 +51,8 @@ public class BaseGoodMovement : MonoBehaviour
     bool isDownhill;
     private Vector2 smoothVelocity = Vector2.zero;
     bool slidingDownSlope = false;
+    float timer = 0f;
+    bool wasJustSliding = false;
 
     void Start()
     {
@@ -59,12 +62,20 @@ public class BaseGoodMovement : MonoBehaviour
         onSlopeText = GameObject.Find("Slope (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText = GameObject.Find("ChangeWeightButton (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText.text = weight;
+
+        switch (weight)
+        {
+            case "low": speed = lowWeightSpeed; break;
+            case "med": speed = medWeightSpeed; break;
+            case "high": speed = highWeightSpeed; break;
+        }
     }
     private void Update()
     {
+        timer += Time.deltaTime;
         if (slidingDownSlope)
         {
-            float tempSpeed = 100;
+            float tempSpeed = 0;
             switch (weight)
             {
                 case "low": tempSpeed = lowWeightSpeed; break;
@@ -73,23 +84,20 @@ public class BaseGoodMovement : MonoBehaviour
             }
             slideSpeedTimer += Time.deltaTime;
             //every .5 seconds, increase the slide speed by 10% up to a maximum of 3x the normal speed
-            if (slideSpeedTimer >= 0.1f)
+            if (slideSpeedTimer >= 0.5f)
             {
                 Debug.Log($"Increasing slide speed. Current speed: {speed}");
                 speed *= 3f;
-                speed = Mathf.Min(tempSpeed, highWeightSpeed * 3f); // Cap the speed increase
+                if (speed > tempSpeed * 3f)
+                {
+                    speed = tempSpeed * 3f;
+                }
                 slideSpeedTimer = 0f; // Reset the timer
             }
         }
-        else
+        else if (wasJustSliding)
         {
-            slideSpeedTimer = 0f;
-            switch (weight)
-            {
-                case "low": speed = lowWeightSpeed; break;
-                case "med": speed = medWeightSpeed; break;
-                case "high": speed = highWeightSpeed; break;
-            }
+            StartCoroutine(CarrySpeed());
         }
 
         if (Input.GetKey(KeyCode.LeftShift))
@@ -101,17 +109,24 @@ public class BaseGoodMovement : MonoBehaviour
             sliding = false;
         }
 
-        slideSpeedTimer += Time.deltaTime;
-
-
+        //onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
+        onSlopeText.text = "On Slope: " + onSlope;
     }
-
+    IEnumerator CarrySpeed()
+    {
+        yield return new WaitForSeconds(1.0f);
+        slideSpeedTimer = 0f;
+        switch (weight)
+        {
+            case "low": speed = lowWeightSpeed; break;
+            case "med": speed = medWeightSpeed; break;
+            case "high": speed = highWeightSpeed; break;
+        }
+    }
 
     void FixedUpdate()
     {
-        onSlopeText.text = "On Slope: " + (slidingDownSlope);
-        //onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
-
+        wasJustSliding = slidingDownSlope;
 
         float targetX = movex * speed;
 
@@ -122,7 +137,11 @@ public class BaseGoodMovement : MonoBehaviour
 
         if (!onSlope)
         {
-            rb.gravityScale = 2f; // Ensure gravity is normal when not on slope
+            slidingDownSlope = false;
+            if (!canClimb)
+            {
+                rb.gravityScale = 2f; // Ensure gravity is normal when not on slope
+            }
             if (movex == 0f)
             {
                 // Smoothly decelerate to 0
@@ -136,42 +155,42 @@ public class BaseGoodMovement : MonoBehaviour
                     rb.linearVelocity.y);
             }
         }
-        //else if (onSlope && movex == 0f)
-        //{
-        //    rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime), 0f);
-        //    rb.gravityScale = -0f;
-        //}
-        //else
-        //{
-        //    isDownhill = (slopeNormalPerp.y > 0f && movex > 0f) || (slopeNormalPerp.y < 0f && movex < 0f);
-        //    rb.gravityScale = 2f; // Ensure gravity is normal when not on slope
-        //    if (isDownhill && rb.linearVelocityY < 0 && sliding)
-        //    {
-        //        slidingDownSlope = true;
-        //        if (!(oldSpeed < speed))
-        //        {
+        else if (onSlope && movex == 0f)
+        {
+            rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime), 0f);
+            rb.gravityScale = -0f;
+        }
+        else
+        {
+            isDownhill = (slopeNormalPerp.y > 0f && movex > 0f) || (slopeNormalPerp.y < 0f && movex < 0f);
+            if (isDownhill && rb.linearVelocityY < 0 && sliding)
+            {
+                rb.gravityScale = 10f; // Disable gravity while sliding down slope
+                slidingDownSlope = true;
+                if (!(oldSpeed < speed))
+                {
 
-        //        }
-        //        float slopeSpeed = speed * 3f;
-        //        float slopeAccel = 60f * Time.fixedDeltaTime;
-        //        float currentX = rb.linearVelocity.x;
-        //        float targetSlopeVelX = speed * slopeNormalPerp.x * -movex;
-        //        float targetSlopeVelY = speed * slopeNormalPerp.y * -movex;
+                }
+                float slopeSpeed = speed * 3f;
+                float slopeAccel = 60f * Time.fixedDeltaTime;
+                float currentX = rb.linearVelocity.x;
+                float targetSlopeVelX = speed * slopeNormalPerp.x * -movex;
+                float targetSlopeVelY = speed * slopeNormalPerp.y * -movex;
 
-        //        rb.linearVelocity = new Vector2(
-        //            Mathf.MoveTowards(currentX, targetSlopeVelX, slopeAccel),
-        //            Mathf.MoveTowards(rb.linearVelocity.y, targetSlopeVelY, slopeAccel)
-        //        ); ;
-        //        slideSpeedTimer = 0f; // Reset slide timer when actively sliding downhill
-        //    }
-        //    else
-        //    {
-        //        slidingDownSlope = false;
-        //        rb.linearVelocity = new Vector2(speed * slopeNormalPerp.x * -movex, speed * slopeNormalPerp.y * -movex);
-        //        Debug.Log($"Moving on slope with velocity: {rb.linearVelocity}");
-        //        Debug.Log($"Slope normal: {slopeNormalPerp}, movex: {movex}");
-        //    }
-        //}
+                rb.linearVelocity = new Vector2(
+                    Mathf.MoveTowards(currentX, targetSlopeVelX, slopeAccel),
+                    Mathf.MoveTowards(rb.linearVelocity.y, targetSlopeVelY, slopeAccel)
+                ); ;
+            }
+            else
+            {
+                rb.gravityScale = 2f; // Ensure gravity is normal when not on slope
+                slidingDownSlope = false;
+                rb.linearVelocity = new Vector2(speed * slopeNormalPerp.x * -movex, speed * slopeNormalPerp.y * -movex);
+                //Debug.Log($"Moving on slope with velocity: {rb.linearVelocity}");
+                //Debug.Log($"Slope normal: {slopeNormalPerp}, movex: {movex}");
+            }
+        }
 
 
 
@@ -214,7 +233,7 @@ public class BaseGoodMovement : MonoBehaviour
         );
 
         // Debug visualize
-        //Debug.DrawRay(origin, Vector2.down * (slopeCheckDistance), Color.green);
+        Debug.DrawRay(origin, Vector2.down * (slopeCheckDistance), Color.green);
 
         if (hit.collider != null)
         {
@@ -222,6 +241,7 @@ public class BaseGoodMovement : MonoBehaviour
             slopeNormalPerp = Vector2.Perpendicular(hit.normal).normalized;
             //Debug.Log($"Grounded on {hit.collider.name}");
             // Slope info
+            Debug.Log($"Hit: {hit.collider.name} at distance {hit.distance}");
             slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
             onSlope = slopeAngle > 1f;
             // small tolerance so flat ground isn�t �slope�
