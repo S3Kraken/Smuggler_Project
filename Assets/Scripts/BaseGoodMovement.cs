@@ -35,7 +35,7 @@ public class BaseGoodMovement : MonoBehaviour
     bool jumping = false;
     bool sliding = false;
     float deceleration = 80f;
-    float slideSpeedTimer = 2f;
+    float slideSpeedTimer = 0f;
 
 
     [SerializeField] float groundCheckRadius = 20f;
@@ -51,9 +51,8 @@ public class BaseGoodMovement : MonoBehaviour
     bool isDownhill;
     private Vector2 smoothVelocity = Vector2.zero;
     bool slidingDownSlope = false;
-    float timer = 0f;
     bool wasJustSliding = false;
-
+    Vector2 slopeNormal;
     void Start()
     {
         tf = GetComponent<Transform>();
@@ -72,7 +71,6 @@ public class BaseGoodMovement : MonoBehaviour
     }
     private void Update()
     {
-        timer += Time.deltaTime;
         if (slidingDownSlope)
         {
             float tempSpeed = 0;
@@ -84,10 +82,10 @@ public class BaseGoodMovement : MonoBehaviour
             }
             slideSpeedTimer += Time.deltaTime;
             //every .5 seconds, increase the slide speed by 10% up to a maximum of 3x the normal speed
-            if (slideSpeedTimer >= 0.5f)
+            if (slideSpeedTimer >= 0.2f)
             {
                 Debug.Log($"Increasing slide speed. Current speed: {speed}");
-                speed *= 3f;
+                speed *= 1.5f;
                 if (speed > tempSpeed * 3f)
                 {
                     speed = tempSpeed * 3f;
@@ -110,11 +108,13 @@ public class BaseGoodMovement : MonoBehaviour
         }
 
         //onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
-        onSlopeText.text = "On Slope: " + onSlope;
+        onSlopeText.text = $"Speed: {speed}\nLinear vel: {rb.linearVelocity.x}";
+        //report linear velocity and slope status for debugging
+
     }
     IEnumerator CarrySpeed()
     {
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(1.5f);
         slideSpeedTimer = 0f;
         switch (weight)
         {
@@ -122,6 +122,10 @@ public class BaseGoodMovement : MonoBehaviour
             case "med": speed = medWeightSpeed; break;
             case "high": speed = highWeightSpeed; break;
         }
+        deceleration = 20f;
+        yield return new WaitForSeconds(1.5f);
+        deceleration = 80f;
+
     }
 
     void FixedUpdate()
@@ -162,10 +166,13 @@ public class BaseGoodMovement : MonoBehaviour
         }
         else
         {
+            Vector3 adjustedGravity = -slopeNormal * Physics.gravity.magnitude * 2;
+            rb.AddForce(adjustedGravity, ForceMode2D.Force);
+
             isDownhill = (slopeNormalPerp.y > 0f && movex > 0f) || (slopeNormalPerp.y < 0f && movex < 0f);
             if (isDownhill && rb.linearVelocityY < 0 && sliding)
             {
-                rb.gravityScale = 10f; // Disable gravity while sliding down slope
+                rb.gravityScale = 2f; // Disable gravity while sliding down slope
                 slidingDownSlope = true;
                 if (!(oldSpeed < speed))
                 {
@@ -184,9 +191,21 @@ public class BaseGoodMovement : MonoBehaviour
             }
             else
             {
-                rb.gravityScale = 2f; // Ensure gravity is normal when not on slope
+                rb.gravityScale = 2f; 
                 slidingDownSlope = false;
                 rb.linearVelocity = new Vector2(speed * slopeNormalPerp.x * -movex, speed * slopeNormalPerp.y * -movex);
+
+                //var slideMovement = new Rigidbody2D.SlideMovement
+                //{
+                //    surfaceSlideAngle = 75f,  // Stick to slopes up to 75°
+                //    surfaceAnchor = new Vector2(0, -0.1f)  // Anchor to ground
+                //};
+
+                //Vector2 slideVelocity = new Vector2(speed * slopeNormalPerp.x * -movex,
+                //                                   speed * slopeNormalPerp.y * -movex);
+
+                //rb.Slide(slideVelocity, Time.fixedDeltaTime, slideMovement);
+
                 //Debug.Log($"Moving on slope with velocity: {rb.linearVelocity}");
                 //Debug.Log($"Slope normal: {slopeNormalPerp}, movex: {movex}");
             }
@@ -239,10 +258,12 @@ public class BaseGoodMovement : MonoBehaviour
         {
             IsGrounded = true;
             slopeNormalPerp = Vector2.Perpendicular(hit.normal).normalized;
+            slopeNormal = hit.normal;
             //Debug.Log($"Grounded on {hit.collider.name}");
             // Slope info
-            Debug.Log($"Hit: {hit.collider.name} at distance {hit.distance}");
+            //Debug.Log($"Hit: {hit.collider.name} at distance {hit.distance}");
             slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+
             onSlope = slopeAngle > 1f;
             // small tolerance so flat ground isn�t �slope�
             // Debug.Log($"Hit {hit.collider.name}, angle {slopeAngle}");

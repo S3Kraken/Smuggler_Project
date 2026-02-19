@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5ec48e208e43bda4bad278b0f998cae1
+guid: a297699dbd999b44cad230943c552b0b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2778520015583169203
-    second: Slope_0
+      213: -5484932555651206592
+    second: Slope2 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Slope_0
+      name: Slope2 1_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3bac522ab394f8620800000000000000
-      internalID: 2778520015583169203
+      spriteID: 0423f6ba6ea91e3b0800000000000000
+      internalID: -5484932555651206592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slope2 1_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba717cf9d68c6844ca2344a6dfe5cea7
+      internalID: 64529283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slope2 1_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbb256e5e3341e343b4a0db22c26d64b
+      internalID: -2094822105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slope2 1_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7941ceeaed740bd469fe0f8ac37767fa
+      internalID: -1314527865
       vertices: []
       indices: 
       edges: []
@@ -125,7 +191,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 7eacae118837608439e5f6852de08a8d
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +201,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Slope_0: 2778520015583169203
+      Slope2 1_0: -5484932555651206592
+      Slope2 1_1: 64529283
+      Slope2 1_2: -2094822105
+      Slope2 1_3: -1314527865
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
