@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Linq;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using UnityEngine.Windows;
 using static Unity.Burst.Intrinsics.X86.Avx;
@@ -24,9 +26,7 @@ public class BaseGoodMovement : MonoBehaviour
     public ContactFilter2D groundFilter; // Set in Inspector (layer & angle)
     bool IsGrounded;
 
-    private RaycastHit2D hit; // Store the result of the raycast
-    private float slopeMultiplier = 10000; // Adjust this value to control how much the slope affects speed
-    //TMPro.TextMeshProUGUI onSlopeText;
+    TMPro.TextMeshProUGUI onSlopeText;
     public LayerMask groundLayer; // Set this to the layer(s) that represent the ground in your game
 
     public bool canClimb = false;
@@ -54,12 +54,13 @@ public class BaseGoodMovement : MonoBehaviour
     bool slidingDownSlope = false;
     bool wasJustSliding = false;
     Vector2 slopeNormal;
+
     void Start()
     {
         tf = GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
         groundCheckEmpty = GameObject.Find("GroundCheckEmpty").GetComponent<Transform>();
-        //onSlopeText = GameObject.Find("Slope (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
+        onSlopeText = GameObject.Find("Slope (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         healthText = GameObject.Find("Health (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText = GameObject.Find("ChangeWeightButton (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText.text = weight;
@@ -73,6 +74,7 @@ public class BaseGoodMovement : MonoBehaviour
     }
     private void Update()
     {
+
         if (slidingDownSlope)
         {
             float tempSpeed = 0;
@@ -100,19 +102,19 @@ public class BaseGoodMovement : MonoBehaviour
             StartCoroutine(CarrySpeed());
         }
 
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            sliding = true;
-        }
-        else
-        {
-            sliding = false;
-        }
+        //if (Input.GetKey(KeyCode.LeftShift))
+        //{
+        //    sliding = true;
+        //}
+        //else
+        //{
+        //    sliding = false;
+        //}
 
         //onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
         //onSlopeText.text = $"Speed: {speed}\nLinear vel: {rb.linearVelocity.x}";
+        onSlopeText.text = $"On Slope: {jumping}";
         //report linear velocity and slope status for debugging
-
     }
     IEnumerator CarrySpeed()
     {
@@ -161,12 +163,12 @@ public class BaseGoodMovement : MonoBehaviour
                     rb.linearVelocity.y);
             }
         }
-        else if (onSlope && movex == 0f)
+        else if (onSlope && movex == 0f && !jumping)
         {
             rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime), 0f);
             rb.gravityScale = -0f;
         }
-        else
+        else if (!jumping)
         {
             Vector3 adjustedGravity = -slopeNormal * Physics.gravity.magnitude * 2;
             rb.AddForce(adjustedGravity, ForceMode2D.Force);
@@ -176,10 +178,6 @@ public class BaseGoodMovement : MonoBehaviour
             {
                 rb.gravityScale = 2f; // Disable gravity while sliding down slope
                 slidingDownSlope = true;
-                if (!(oldSpeed < speed))
-                {
-
-                }
                 float slopeSpeed = speed * 3f;
                 float slopeAccel = 60f * Time.fixedDeltaTime;
                 float currentX = rb.linearVelocity.x;
@@ -213,8 +211,6 @@ public class BaseGoodMovement : MonoBehaviour
             }
         }
 
-
-
         GroundAndSlopeDetection();
     }
 
@@ -242,6 +238,12 @@ public class BaseGoodMovement : MonoBehaviour
         }
     }
 
+    IEnumerator justJumped()
+    {
+        slopeCheckDistance = 0.0f; // Reduce slope check distance immediately after jumping to prevent sticking to slopes
+        yield return new WaitForSeconds(0.15f);
+        slopeCheckDistance = 1f; // Restore slope check distance after a short delay
+    }
     void GroundAndSlopeDetection()
     {
         Vector2 origin = groundCheckEmpty.position;
@@ -252,7 +254,7 @@ public class BaseGoodMovement : MonoBehaviour
             slopeCheckDistance,
             groundLayer
         );
-
+       
         // Debug visualize
         Debug.DrawRay(origin, Vector2.down * (slopeCheckDistance), Color.green);
 
@@ -314,14 +316,16 @@ public class BaseGoodMovement : MonoBehaviour
     {
         if (IsGrounded)
         {
+            IsGrounded = false;
             jumping = true;
+            StartCoroutine(justJumped());
             rb.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
         }
     }
 
-    void OnSlide()
+    void OnSlide(InputValue value)
     {
-
+        sliding = value.isPressed;  // true when held, false when released
     }
     public void Heal(float amount)
     {
@@ -336,9 +340,11 @@ public class BaseGoodMovement : MonoBehaviour
     public void TakeDamage(float amount)
     {
         health -= amount;
-        if (health < 0)
+        if (health <= 0)
         {
             health = 0;
+            SceneManager.LoadScene("DemoStage");
+
         }
         healthText.text = "Health: " + health;
     }

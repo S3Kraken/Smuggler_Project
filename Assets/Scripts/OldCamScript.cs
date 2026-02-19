@@ -2,7 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class Camera : MonoBehaviour
+public class OldCamScript : MonoBehaviour
 {
     GameObject player;
     float xOffset = 5;
