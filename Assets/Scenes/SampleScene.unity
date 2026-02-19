@@ -1424,26 +1424,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e54c9d2db3d27940ba935b82f5f3f77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundFilter:
-    useTriggers: 0
-    useLayerMask: 0
-    useDepth: 0
-    useOutsideDepth: 0
-    useNormalAngle: 0
-    useOutsideNormalAngle: 0
-    layerMask:
-      m_Bits: 0
-    minDepth: 0
-    maxDepth: 0
-    minNormalAngle: 0
-    maxNormalAngle: 0
-  onSlopeText: {fileID: 0}
-  groundLayer:
-    m_Bits: 0
-  canClimb: 0
-  ChangeWeightButtonText: {fileID: 0}
-  groundCheckRadius: 20
-  groundCheckDistance: 0
 --- !u!70 &108417890
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -20109,8 +20089,7 @@ MonoBehaviour:
   canClimb: 1
   ChangeWeightButtonText: {fileID: 0}
   groundCheckRadius: 1
-  groundCheckDistance: 1
-  useTransform: 0
+  slopeCheckDistance: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
