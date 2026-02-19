@@ -20732,6 +20732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCam: {fileID: 0}
+  inputActions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &1942320919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21380,6 +21381,7 @@ MonoBehaviour:
   canClimb: 0
   groundCheckRadius: 1
   slopeCheckDistance: 1
+  inputActions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &2133681174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21392,6 +21394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab83af325eaa9ab49b6d87177e445693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panModeActive: 0
 --- !u!1001 &3086648002473472255
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21454,8 +21457,8 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
-  - {fileID: 1942320922}
   - {fileID: 669347840}
+  - {fileID: 1942320922}
   - {fileID: 2133681167}
   - {fileID: 108417893}
   - {fileID: 619394802}

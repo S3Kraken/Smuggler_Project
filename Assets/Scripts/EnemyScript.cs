@@ -20,8 +20,6 @@ public class EnemyScript : MonoBehaviour
         //if the player is within 20 units of the enemy, shoot at the player
         if (Vector2.Distance(transform.position, player.transform.position) < 20 && canShoot)
         {
-            //debug the distance between the enemy and the player
-            Debug.Log(Vector2.Distance(transform.position, player.transform.position));
             //shoot at the player
             Vector2 direction = (player.transform.position - transform.position).normalized;
 

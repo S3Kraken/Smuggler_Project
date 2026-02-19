@@ -4,10 +4,16 @@ public class CamSwitcher : MonoBehaviour
 {
     GameObject mainCam;
     GameObject panCam;
-     void Awake()
+    public bool panModeActive = false;
+    void Awake()
     {
         mainCam = GameObject.Find("Main Camera");
         panCam = GameObject.Find("PanCam");
+    }
+
+    void Start()
+    {
+        panCam.SetActive(false);
     }
      void OnToggleCam()
     {
@@ -15,22 +21,14 @@ public class CamSwitcher : MonoBehaviour
         {
             mainCam.SetActive(false);
             panCam.SetActive(true);
+            panModeActive = true;
+            panCam.GetComponent<PanCamScript>().ResetSpeed();
         }
         else
         {
             mainCam.SetActive(true);
             panCam.SetActive(false);
+            panModeActive = false;
         }
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

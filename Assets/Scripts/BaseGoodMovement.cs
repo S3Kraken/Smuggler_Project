@@ -55,6 +55,12 @@ public class BaseGoodMovement : MonoBehaviour
     bool wasJustSliding = false;
     Vector2 slopeNormal;
 
+    bool killMovement = false;
+    CamSwitcher camSwitcher;
+
+    public InputActionAsset inputActions;
+    private InputAction slideAction;
+
     void Start()
     {
         tf = GetComponent<Transform>();
@@ -65,15 +71,23 @@ public class BaseGoodMovement : MonoBehaviour
         ChangeWeightButtonText = GameObject.Find("ChangeWeightButton (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText.text = weight;
 
+        camSwitcher = GetComponent<CamSwitcher>();
         switch (weight)
         {
             case "low": speed = lowWeightSpeed; break;
             case "med": speed = medWeightSpeed; break;
             case "high": speed = highWeightSpeed; break;
         }
+        inputActions = GetComponent<PlayerInput>().actions;
+        slideAction = inputActions.FindAction("Slide");
+        slideAction.Enable();
     }
     private void Update()
     {
+
+        killMovement = camSwitcher.panModeActive;
+
+        sliding = slideAction.IsPressed();
 
         if (slidingDownSlope)
         {
@@ -113,7 +127,7 @@ public class BaseGoodMovement : MonoBehaviour
 
         //onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
         //onSlopeText.text = $"Speed: {speed}\nLinear vel: {rb.linearVelocity.x}";
-        onSlopeText.text = $"On Slope: {jumping}";
+        onSlopeText.text = $"On Slope: {sliding}";
         //report linear velocity and slope status for debugging
     }
     IEnumerator CarrySpeed()
@@ -254,7 +268,7 @@ public class BaseGoodMovement : MonoBehaviour
             slopeCheckDistance,
             groundLayer
         );
-       
+
         // Debug visualize
         Debug.DrawRay(origin, Vector2.down * (slopeCheckDistance), Color.green);
 
@@ -288,6 +302,7 @@ public class BaseGoodMovement : MonoBehaviour
 
     private void OnMove(InputValue movementValue)
     {
+        if (killMovement) return; // Ignore player movement input when in pan mode
         Vector2 movementVector = movementValue.Get<Vector2>();
         movex = movementVector.x;
 
@@ -314,6 +329,7 @@ public class BaseGoodMovement : MonoBehaviour
     }
     void OnJump()
     {
+        if (killMovement) return; // Ignore jump input when in pan mode
         if (IsGrounded)
         {
             IsGrounded = false;
@@ -323,10 +339,10 @@ public class BaseGoodMovement : MonoBehaviour
         }
     }
 
-    void OnSlide(InputValue value)
-    {
-        sliding = value.isPressed;  // true when held, false when released
-    }
+    //void OnSlide(InputValue value)
+    //{
+    //    sliding = value.isPressed;  // true when held, false when released
+    //}
     public void Heal(float amount)
     {
         health += amount;

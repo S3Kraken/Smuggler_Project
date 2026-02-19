@@ -1,30 +1,49 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static Unity.Cinemachine.CinemachineTargetGroup;
-using static UnityEngine.GraphicsBuffer;
 
 public class PanCamScript : MonoBehaviour
 {
     float movex, movey;
     Vector2 smoothVelocity = Vector2.zero;
-    float speed = 5;
+    float speed = 30;
     public GameObject mainCam;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    public InputActionAsset inputActions;
+    private InputAction moveAction;
+
     void Start()
     {
-        //this.enabled = false;
-    }
 
+        moveAction = inputActions.FindAction("Move");  // "Move" = your action name
+        moveAction.Enable();
+    }
+  
     private void FixedUpdate()
     {
+        //if (moveAction.WasPressedThisFrame()) Debug.Log("Move pressed!");
+        //if (moveAction.WasReleasedThisFrame()) Debug.Log("Move released!");
+        if (moveAction.IsPressed())
+        {
+            Vector2 moveInput = moveAction.ReadValue<Vector2>();
+            movex = moveInput.x;
+            movey = moveInput.y;
+        }
+        else
+        {
+            movex = 0f;
+            movey = 0f;
+        }
+
+        //float movex = Input.GetAxisRaw("Horizontal");
+        //float movey = Input.GetAxisRaw("Vertical");
+
         float targetX = movex * speed;
         float targetY = movey * speed;
 
         if (movex == 0f)
         {
             // Smoothly decelerate
-            smoothVelocity.x = Mathf.MoveTowards(smoothVelocity.x, 0f, 60f * Time.fixedDeltaTime);
+            smoothVelocity.x = Mathf.MoveTowards(smoothVelocity.x, 0f, 80f * Time.fixedDeltaTime);
         }
         else
         {
@@ -32,7 +51,7 @@ public class PanCamScript : MonoBehaviour
         }
         if (movey == 0f)
         {
-            smoothVelocity.y = Mathf.MoveTowards(smoothVelocity.y, 0f, 60f * Time.fixedDeltaTime);
+            smoothVelocity.y = Mathf.MoveTowards(smoothVelocity.y, 0f, 80f * Time.fixedDeltaTime);
         }
         else
         {
@@ -43,11 +62,16 @@ public class PanCamScript : MonoBehaviour
 
     }
 
-    private void OnMove(InputValue movementValue)
+    //private void OnMove(Vector2 v)
+    //{
+    //    Debug.Log("Moving");
+    //    //Vector2 movementVector = movementValue.Get<Vector2>();
+    //    movex = v.x;
+    //    movey = v.y;
+    //}
+
+    public void ResetSpeed()
     {
-        Debug.Log("Moving");
-        Vector2 movementVector = movementValue.Get<Vector2>();
-        movex = movementVector.x;
-        movey = movementVector.y;
+       smoothVelocity = Vector2.zero;
     }
 }
