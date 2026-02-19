@@ -26,11 +26,12 @@ public class BaseGoodMovement : MonoBehaviour
 
     private RaycastHit2D hit; // Store the result of the raycast
     private float slopeMultiplier = 10000; // Adjust this value to control how much the slope affects speed
-    public TMPro.TextMeshProUGUI onSlopeText;
+    //TMPro.TextMeshProUGUI onSlopeText;
     public LayerMask groundLayer; // Set this to the layer(s) that represent the ground in your game
 
     public bool canClimb = false;
-    public TMPro.TextMeshProUGUI ChangeWeightButtonText;
+    TMPro.TextMeshProUGUI ChangeWeightButtonText;
+    TMPro.TextMeshProUGUI healthText;
 
     bool jumping = false;
     bool sliding = false;
@@ -58,7 +59,8 @@ public class BaseGoodMovement : MonoBehaviour
         tf = GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
         groundCheckEmpty = GameObject.Find("GroundCheckEmpty").GetComponent<Transform>();
-        onSlopeText = GameObject.Find("Slope (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
+        //onSlopeText = GameObject.Find("Slope (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
+        healthText = GameObject.Find("Health (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText = GameObject.Find("ChangeWeightButton (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         ChangeWeightButtonText.text = weight;
 
@@ -108,7 +110,7 @@ public class BaseGoodMovement : MonoBehaviour
         }
 
         //onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
-        onSlopeText.text = $"Speed: {speed}\nLinear vel: {rb.linearVelocity.x}";
+        //onSlopeText.text = $"Speed: {speed}\nLinear vel: {rb.linearVelocity.x}";
         //report linear velocity and slope status for debugging
 
     }
@@ -191,7 +193,7 @@ public class BaseGoodMovement : MonoBehaviour
             }
             else
             {
-                rb.gravityScale = 2f; 
+                rb.gravityScale = 2f;
                 slidingDownSlope = false;
                 rb.linearVelocity = new Vector2(speed * slopeNormalPerp.x * -movex, speed * slopeNormalPerp.y * -movex);
 
@@ -328,7 +330,17 @@ public class BaseGoodMovement : MonoBehaviour
         {
             health = 100;
         }
-        //healthText.text = "Health: " + health;
+        healthText.text = "Health: " + health;
+    }
+
+    public void TakeDamage(float amount)
+    {
+        health -= amount;
+        if (health < 0)
+        {
+            health = 0;
+        }
+        healthText.text = "Health: " + health;
     }
 
     public void ChangeWeight()
@@ -350,7 +362,12 @@ public class BaseGoodMovement : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.name == "Ladders")
-            canClimb = true;
+        { canClimb = true; }
+        else if (collision.gameObject.tag == "Bullet")
+        {
+            Debug.Log("Hit by bullet!");
+            TakeDamage(20);
+        }
     }
 
     void OnTriggerExit2D(Collider2D collision)
