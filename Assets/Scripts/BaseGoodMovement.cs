@@ -16,9 +16,9 @@ public class BaseGoodMovement : MonoBehaviour
     private float movex, movey;
     float speed = 5;
     string weight = "med"; // "low", "med", "high"
-    float lowWeightSpeed = 12.5f;
-    float medWeightSpeed = 10;
-    float highWeightSpeed = 5f;
+    public float lowWeightSpeed = 12.5f;
+    public float medWeightSpeed = 10;
+    public float highWeightSpeed = 5f;
     private float health = 100;
 
     public ContactFilter2D groundFilter; // Set in Inspector (layer & angle)

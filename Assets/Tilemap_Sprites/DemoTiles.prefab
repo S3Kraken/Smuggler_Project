@@ -320,6 +320,8 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: dda7a7677c59b73479e3c8fa604bad52, type: 2}
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: a195533ca1fa8ab47875041aeb53feae, type: 2}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileSpriteArray:
   - m_RefCount: 3
     m_Data: {fileID: 5931842347579807508, guid: 9e9cc604da4b2cc468ec44bcf2d99928, type: 3}
@@ -363,6 +365,8 @@ Tilemap:
     m_Data: {fileID: -2094822105, guid: a297699dbd999b44cad230943c552b0b, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: -1314527865, guid: a297699dbd999b44cad230943c552b0b, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileMatrixArray:
   - m_RefCount: 23
     m_Data:
@@ -397,7 +401,7 @@ Tilemap:
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: -5, y: -1, z: 0}
-  m_Size: {x: 11, y: 6, z: 1}
+  m_Size: {x: 20, y: 6, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -480,7 +484,7 @@ GameObject:
   - component: {fileID: 2884111098437947121}
   - component: {fileID: 2772213629569249707}
   m_Layer: 0
-  m_Name: New Tile Palette
+  m_Name: DemoTiles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -510,11 +514,11 @@ Grid:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8617427600370337066}
   m_Enabled: 1
-  m_CellSize: {x: 1, y: 1, z: 0}
+  m_CellSize: {x: 10.74, y: 3.56, z: 0}
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
---- !u!114 &5575175559718296206
+--- !u!114 &8763086939539764073
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
