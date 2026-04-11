@@ -26,9 +26,11 @@ public class PlayerMovementWithDash : MonoBehaviour
     //but can only be privately written to.
     public bool IsFacingRight { get; private set; }
     public bool IsJumping { get; private set; }
+    public bool IsGrounded { get; private set; }
+
     public bool IsWallJumping { get; private set; }
     public bool IsDashing { get; private set; }
-    public bool IsSliding { get; private set; }
+    public bool IsWallSliding { get; private set; }
 
     //Timers (also all fields, could be private and a method returning a bool could be used)
     [SerializeField] public float LastOnGroundTime { get; private set; }
@@ -38,7 +40,7 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     //Jump
     private bool _isJumpCut;
-    private bool _isJumpFalling;
+    private bool _isFalling;
 
     //Wall Jump
     private float _wallJumpStartTime;
@@ -49,6 +51,13 @@ public class PlayerMovementWithDash : MonoBehaviour
     private bool _dashRefilling;
     private Vector2 _lastDashDir;
     private bool _isDashAttacking;
+
+    //Slopes
+    private bool onSlope;
+    private float slopeAngle;
+    private Vector2 slopeNormalPerp;
+    private Vector2 slopeNormal;
+    [SerializeField] float slopeCheckDistance = 1f;
 
     #endregion
 
@@ -124,13 +133,18 @@ public class PlayerMovementWithDash : MonoBehaviour
         #endregion
 
         #region COLLISION CHECKS
+
+
         if (!IsDashing && !IsJumping)
         {
-            //Ground Check
-            if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer) && !IsJumping) //checks if set box overlaps with ground
-            {
-                LastOnGroundTime = Data.coyoteTime; //if so sets the lastGrounded to coyoteTime
-            }
+            GroundAndSlopeDetection();
+
+
+            ////Ground Check
+            //if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer) && !IsJumping) //checks if set box overlaps with ground
+            //{
+            //    LastOnGroundTime = Data.coyoteTime; //if so sets the lastGrounded to coyoteTime
+            //}
 
             //Right Wall Check
             if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && IsFacingRight)
@@ -148,13 +162,28 @@ public class PlayerMovementWithDash : MonoBehaviour
         #endregion
 
         #region JUMP CHECKS
-        if (IsJumping && RB.linearVelocity.y < 0)
+        //if (IsJumping && RB.linearVelocity.y < 0)
+        //{
+        //    //falling
+        //    IsJumping = false;
+
+        //    if (!IsWallJumping)
+        //        _isFalling = true;
+        //}
+
+        if (LastOnGroundTime < Data.coyoteTime)
         {
-            //falling
+            IsGrounded = false;
+        }
+        else
+        {
+            IsGrounded = true;
+        }
+
+        if (RB.linearVelocity.y < 0 && LastOnGroundTime < 0.1f)
+        {
             IsJumping = false;
-            
-            if (!IsWallJumping)
-                _isJumpFalling = true;
+            _isFalling = true;
         }
 
         if (IsWallJumping && Time.time - _wallJumpStartTime > Data.wallJumpTime)
@@ -167,7 +196,7 @@ public class PlayerMovementWithDash : MonoBehaviour
             _isJumpCut = false;
 
             if (!IsJumping)
-                _isJumpFalling = false;
+                _isFalling = false;
         }
 
         if (!IsDashing)
@@ -178,7 +207,7 @@ public class PlayerMovementWithDash : MonoBehaviour
                 IsJumping = true;
                 IsWallJumping = false;
                 _isJumpCut = false;
-                _isJumpFalling = false;
+                _isFalling = false;
 
                 Jump();
             }
@@ -188,7 +217,7 @@ public class PlayerMovementWithDash : MonoBehaviour
                 IsWallJumping = true;
                 IsJumping = false;
                 _isJumpCut = false;
-                _isJumpFalling = false;
+                _isFalling = false;
 
                 _wallJumpStartTime = Time.time;
                 _lastWallJumpDir = (LastOnWallRightTime > 0) ? -1 : 1;
@@ -223,16 +252,16 @@ public class PlayerMovementWithDash : MonoBehaviour
 
         #region SLIDE CHECKS
         if (CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) || (LastOnWallRightTime > 0 && _moveInput.x > 0)))
-            IsSliding = true;
+            IsWallSliding = true;
         else
-            IsSliding = false;
+            IsWallSliding = false;
         #endregion
 
         #region GRAVITY
         if (!_isDashAttacking)
         {
             //Higher gravity if we've released the jump input or are falling
-            if (IsSliding)
+            if (IsWallSliding)
             {
                 SetGravityScale(0);
             }
@@ -249,7 +278,7 @@ public class PlayerMovementWithDash : MonoBehaviour
                 SetGravityScale(Data.gravityScale * Data.jumpCutGravityMult);
                 RB.linearVelocity = new Vector2(RB.linearVelocity.x, Mathf.Max(RB.linearVelocity.y, -Data.maxFallSpeed));
             }
-            else if ((IsJumping || IsWallJumping || _isJumpFalling) && Mathf.Abs(RB.linearVelocity.y) < Data.jumpHangTimeThreshold)
+            else if ((IsJumping || IsWallJumping || _isFalling) && Mathf.Abs(RB.linearVelocity.y) < Data.jumpHangTimeThreshold)
             {
                 SetGravityScale(Data.gravityScale * Data.jumpHangGravityMult);
             }
@@ -275,7 +304,7 @@ public class PlayerMovementWithDash : MonoBehaviour
 
         #region ANIMATION CHECKS
 
-        if (Mathf.Abs(RB.linearVelocity.x) > 0.1f && !IsJumping && !_isJumpFalling)
+        if (Mathf.Abs(RB.linearVelocity.x) > 0.1f && !IsJumping && !_isFalling)
         {
             anim.CrossFade("Run", 0, 0);
         }
@@ -287,7 +316,7 @@ public class PlayerMovementWithDash : MonoBehaviour
         {
             anim.CrossFade("Falling", 0, 0);
         }
-        else if (!IsJumping && !_isJumpFalling)
+        else if (!IsJumping && !_isFalling)
         {
             anim.CrossFade("Idle", 0, 0);
         }
@@ -310,7 +339,7 @@ public class PlayerMovementWithDash : MonoBehaviour
         }
 
         //Handle Slide
-        if (IsSliding)
+        if (IsWallSliding)
             Slide();
     }
 
@@ -377,7 +406,7 @@ public class PlayerMovementWithDash : MonoBehaviour
 
         #region Add Bonus Jump Apex Acceleration
         //Increase are acceleration and maxSpeed when at the apex of their jump, makes the jump feel a bit more bouncy, responsive and natural
-        if ((IsJumping || IsWallJumping || _isJumpFalling) && Mathf.Abs(RB.linearVelocity.y) < Data.jumpHangTimeThreshold)
+        if ((IsJumping || IsWallJumping || _isFalling) && Mathf.Abs(RB.linearVelocity.y) < Data.jumpHangTimeThreshold)
         {
             accelRate *= Data.jumpHangAccelerationMult;
             targetSpeed *= Data.jumpHangMaxSpeedMult;
@@ -396,14 +425,66 @@ public class PlayerMovementWithDash : MonoBehaviour
 
         //Calculate difference between current velocity and desired velocity
         float speedDif = targetSpeed - RB.linearVelocity.x;
-        //Calculate force along x-axis to apply to thr player
 
+        //Calculate force along x-axis to apply to thr player
         float movement = speedDif * accelRate;
 
         //Convert this to a vector and apply to rigidbody
-        RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
+        if (!onSlope)
+            RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
+        else if (onSlope && _moveInput.x == 0 && !IsJumping && !IsDashing)
+        {
+            RB.linearVelocity = new Vector2(0, 0);
+            SetGravityScale(0);
+        }
+        else
+        {
 
-        
+            // Ensure slopeNormalPerp is a unit tangent that points the same way as positive move input (right along the slope)
+            Vector2 tangent = slopeNormalPerp.normalized;
+
+            // signed target speed along tangent (preserve input sign)
+            float targetSpeedAlongSlope = Data.runMaxSpeed * -_moveInput.x;
+
+            // current velocity projected onto tangent (signed)
+            float currentSpeedAlongSlope = Vector2.Dot(RB.linearVelocity, tangent);
+
+            // lerp target like on flat (optional)
+            targetSpeedAlongSlope = Mathf.Lerp(currentSpeedAlongSlope, targetSpeedAlongSlope, lerpAmount);
+
+            // acceleration rate same as earlier (accelRate variable already computed)
+
+            // speed difference along slope
+            float speedDifAlongSlope = targetSpeedAlongSlope - currentSpeedAlongSlope;
+
+            // movement scalar along tangent
+            float movementAlongSlope = speedDifAlongSlope * accelRate;
+
+            // force vector along slope tangent
+            Vector2 forceAlongSlope = tangent * movementAlongSlope;
+
+            // apply force
+            RB.AddForce(forceAlongSlope, ForceMode2D.Force);
+
+
+
+            //SetGravityScale(0);
+
+            //Vector2 slopeDir = slopeNormalPerp.normalized;
+            //float slopeSpeed = Mathf.Clamp(movement, -Data.runMaxSpeed*2, Data.runMaxSpeed*2);
+
+            //RB.AddForce(-slopeDir * slopeSpeed, ForceMode2D.Force);
+
+            //Vector3 adjustedGravity = -slopeNormal * Physics.gravity.magnitude * 2;
+            //RB.AddForce(adjustedGravity, ForceMode2D.Force);
+
+            //RB.AddForce(slopeNormalPerp * movement * -_moveInput.x, ForceMode2D.Force);
+            //RB.AddForce(new Vector2(speedDif * slopeNormalPerp.x * -_moveInput.x, speedDif * slopeNormalPerp.y * -_moveInput.x));
+            //Debug.Log(_moveInput.x);
+            //RB.linearVelocity = new Vector2(Data.runMaxSpeed * slopeNormalPerp.x * -_moveInput.x, Data.runMaxSpeed * slopeNormalPerp.y * -_moveInput.x);
+        }
+
+
         /*
 		 * For those interested here is what AddForce() will do
 		 * RB.velocity = new Vector2(RB.velocity.x + (Time.fixedDeltaTime  * speedDif * accelRate) / RB.mass, RB.velocity.y);
@@ -425,6 +506,7 @@ public class PlayerMovementWithDash : MonoBehaviour
     #region JUMP METHODS
     private void Jump()
     {
+        SetGravityScale(Data.gravityScale);
         //Ensures we can't call Jump multiple times from one press
         LastPressedJumpTime = 0;
         LastOnGroundTime = 0;
@@ -537,6 +619,51 @@ public class PlayerMovementWithDash : MonoBehaviour
 
 
     #region CHECK METHODS
+    void GroundAndSlopeDetection()
+    {
+        Vector2 origin = _groundCheckPoint.position;
+
+        RaycastHit2D hit = Physics2D.Raycast(
+            origin,
+            Vector2.down,
+            slopeCheckDistance,
+            _groundLayer
+        );
+
+        // Debug visualize
+        Debug.DrawRay(origin, Vector2.down * (slopeCheckDistance), Color.green);
+
+        if (hit.collider != null)
+        {
+            LastOnGroundTime = Data.coyoteTime;
+
+            IsGrounded = true;
+            slopeNormalPerp = Vector2.Perpendicular(hit.normal).normalized;
+            slopeNormal = hit.normal;
+
+            //Debug.Log($"Grounded on {hit.collider.name}");
+            // Slope info
+            //Debug.Log($"Hit: {hit.collider.name} at distance {hit.distance}");
+
+            slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+
+            onSlope = slopeAngle > 1f;
+
+            // Debug.Log($"Hit {hit.collider.name}, angle {slopeAngle}");
+            //if (onSlope && !jumping)
+            //{
+            //Vector2 temp = tf.position;
+            //temp.y = hit.point.y + 2f; // Adjust 0.5f based on your character's pivot/height
+            //tf.position = temp;
+            //}
+        }
+        else
+        {
+            IsGrounded = false;
+            onSlope = false;
+            slopeAngle = 0f;
+        }
+    }
     public void CheckDirectionToFace(bool isMovingRight)
     {
         if (isMovingRight != IsFacingRight)
