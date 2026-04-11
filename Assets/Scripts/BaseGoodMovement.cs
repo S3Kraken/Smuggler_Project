@@ -9,10 +9,11 @@ using static Unity.Burst.Intrinsics.X86.Avx;
 using static UnityEngine.UI.Image;
 using Input = UnityEngine.Input;
 
-public class BaseGoodMovement : MonoBehaviour
+public class PlayerMovement2 : MonoBehaviour
 {
     private Transform tf;
     private Rigidbody2D rb;
+    [SerializeField] private Animator animator;
     private float movex, movey;
     float speed = 5;
     string weight = "med"; // "low", "med", "high"
@@ -84,7 +85,26 @@ public class BaseGoodMovement : MonoBehaviour
     {
 
         killMovement = camSwitcher.panModeActive;
+        handleSliding();
 
+        //if (Input.GetKey(KeyCode.LeftShift))
+        //{
+        //    sliding = true;
+        //}
+        //else
+        //{
+        //    sliding = false;
+        //}
+
+        //onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
+        //onSlopeText.text = $"Speed: {speed}\nLinear vel: {rb.linearVelocity.x}";
+        onSlopeText.text = $"On Slope: {sliding}";
+        //report linear velocity and slope status for debugging
+    }
+
+    private void handleSliding()
+    {
+        wasJustSliding = slidingDownSlope;
         sliding = slideAction.IsPressed();
 
         if (slidingDownSlope)
@@ -113,21 +133,8 @@ public class BaseGoodMovement : MonoBehaviour
         {
             StartCoroutine(CarrySpeed());
         }
-
-        //if (Input.GetKey(KeyCode.LeftShift))
-        //{
-        //    sliding = true;
-        //}
-        //else
-        //{
-        //    sliding = false;
-        //}
-
-        //onSlopeText.text = "On Slope: " + (canClimb && movey != 0);
-        //onSlopeText.text = $"Speed: {speed}\nLinear vel: {rb.linearVelocity.x}";
-        onSlopeText.text = $"On Slope: {sliding}";
-        //report linear velocity and slope status for debugging
     }
+
     IEnumerator CarrySpeed()
     {
         yield return new WaitForSeconds(1.5f);
@@ -146,8 +153,13 @@ public class BaseGoodMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        wasJustSliding = slidingDownSlope;
+        handleMovement();
 
+        GroundAndSlopeDetection();
+    }
+
+    private void handleMovement()
+    {
         float targetX = movex * speed;
 
         if (IsGrounded)
@@ -165,7 +177,8 @@ public class BaseGoodMovement : MonoBehaviour
             if (movex == 0f)
             {
                 // Smoothly decelerate to 0
-                rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime), rb.linearVelocity.y);
+                //rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, 60f * Time.fixedDeltaTime), rb.linearVelocity.y);
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             }
             else
             {
@@ -222,8 +235,6 @@ public class BaseGoodMovement : MonoBehaviour
                 //Debug.Log($"Slope normal: {slopeNormalPerp}, movex: {movex}");
             }
         }
-
-        GroundAndSlopeDetection();
     }
 
     void GroundDetection()
@@ -304,6 +315,23 @@ public class BaseGoodMovement : MonoBehaviour
         Vector2 movementVector = movementValue.Get<Vector2>();
         movex = movementVector.x;
 
+        if (movex < 0)
+        {
+            tf.localScale = new Vector3(-2, 2, 2); // Face left
+        }
+        else if (movex > 0)
+        {
+            tf.localScale = new Vector3(2, 2, 2); // Face right
+        }
+        if (movex != 0)
+        {
+            animator.SetBool("isRunning", true);
+        }
+        else
+        {
+            animator.SetBool("isRunning", false);
+        }
+
         if (canClimb && movementVector.y != 0)
         {
             movey = movementVector.y;
@@ -330,6 +358,9 @@ public class BaseGoodMovement : MonoBehaviour
         if (killMovement) return; // Ignore jump input when in pan mode
         if (IsGrounded)
         {
+            animator.Play("Jump", 0, 0);
+            animator.SetBool("isRunning", false);
+
             IsGrounded = false;
             jumping = true;
             StartCoroutine(justJumped());
@@ -384,7 +415,7 @@ public class BaseGoodMovement : MonoBehaviour
                 case "high": speed = highWeightSpeed; break;
             }
         }
-        
+
     }
     void OnTriggerEnter2D(Collider2D collision)
     {
