@@ -26,11 +26,11 @@ MonoBehaviour:
   accelInAir: 0.65
   deccelInAir: 0.65
   doConserveMomentum: 1
-  slopeSpeedMultiplier: 1.5
-  slopeAcceleration: 0
-  slopeAccelAmount: 0
-  slopeDecceleration: 0
-  slopeDeccelAmount: 0
+  slopeSlideSpeedMultiplier: 3
+  slopeSlideAcceleration: 0.2
+  slopeSlideAccelAmount: 2.4
+  slopeSlideDecceleration: 0.2
+  slopeSlideDeccelAmount: 2.4
   jumpHeight: 5
   jumpTimeToApex: 0.3
   jumpForce: 33.333332

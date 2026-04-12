@@ -42,7 +42,7 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     //Jump
     private bool _isJumpCut;
-    public  bool IsFalling { get; private set; }
+    public bool IsFalling { get; private set; }
 
     //Wall Jump
     private float _wallJumpStartTime;
@@ -62,6 +62,7 @@ public class PlayerMovementWithDash : MonoBehaviour
     [SerializeField] float _slopeCheckDistance = 1f;
     public bool OnDownhillSlope { get; private set; }
     public bool IsSlopeSliding { get; private set; }
+    public bool WasOnSlope { get; private set; }
 
     #endregion
 
@@ -138,10 +139,10 @@ public class PlayerMovementWithDash : MonoBehaviour
 
         #region COLLISION CHECKS
 
+        GroundAndSlopeDetection();
 
         if (!IsDashing && !IsJumping)
         {
-            GroundAndSlopeDetection();
 
 
             //Wider Ground collision check to use with the small raycast
@@ -236,7 +237,7 @@ public class PlayerMovementWithDash : MonoBehaviour
         if (CanDash() && LastPressedDashTime > 0)
         {
             //Freeze game for split second. Adds juiciness and a bit of forgiveness over directional input
-            Sleep(Data.dashSleepTime);
+            //Sleep(Data.dashSleepTime);
 
             //If not direction pressed, dash forward
             if (_moveInput != Vector2.zero)
@@ -250,6 +251,7 @@ public class PlayerMovementWithDash : MonoBehaviour
             IsJumping = false;
             IsWallJumping = false;
             _isJumpCut = false;
+            IsSlopeSliding = false;
 
             StartCoroutine(nameof(StartDash), _lastDashDir);
         }
@@ -437,33 +439,49 @@ public class PlayerMovementWithDash : MonoBehaviour
         float movement = speedDif * accelRate;
 
         //Convert this to a vector and apply to rigidbody
-
+        Debug.Log(RB.linearVelocity);
         if (!_onSlope) //If on flat ground, apply a force normally
         {
-            //SetGravityScale(0);
+            //SetGravityScale(Data.gravityScale);
             RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
             IsSlopeSliding = false;
-            Debug.Log("Not on slope");
+            WasOnSlope = false;
+            //Debug.Log("Not on slope");
         }
         else if (_onSlope && _moveInput.x == 0 && !IsJumping && !IsDashing && !IsSlopeSliding) //Don't slide down if still on a slope
         {
             RB.linearVelocity = new Vector2(0, 0);
             SetGravityScale(0);
-            Debug.Log("On slope, no input");
+            //Debug.Log("On slope, no input");
         }
         else //Move along slope if on a slope
         {
-            Debug.Log("On slope, input");
+            SetGravityScale(0);
+            //if (!WasOnSlope)
+            //{
+            //    //Data.doConserveMomentum = false;
+            //    SetGravityScale(0);
+
+            //    WasOnSlope = true;
+            //}
+            //else
+            //{
+            //    SetGravityScale(Data.gravityScale);
+            //    //SetGravityScale(0);
+            //    //Data.doConserveMomentum = true;
+            //}
+
+
             #region MOVE ALONG SLOPE
             // Ensure slopeNormalPerp is a unit tangent that points the same way as positive move input (right along the slope)
             Vector2 tangent = _slopeNormalPerp.normalized;
 
             // signed target speed along tangent (preserve input sign)
             float targetSpeedAlongSlope = Data.runMaxSpeed * -_moveInput.x;
-            
+
             //Speed up my the slope multiplier if sliding down
             if (IsSlopeSliding)
-                targetSpeedAlongSlope = Data.runMaxSpeed * -Data.slopeSpeedMultiplier;
+                targetSpeedAlongSlope = Data.runMaxSpeed * -Data.slopeSlideSpeedMultiplier;
 
             // current velocity projected onto tangent (signed)
             float currentSpeedAlongSlope = Vector2.Dot(RB.linearVelocity, tangent);
@@ -476,8 +494,18 @@ public class PlayerMovementWithDash : MonoBehaviour
             // speed difference along slope
             float speedDifAlongSlope = targetSpeedAlongSlope - currentSpeedAlongSlope;
 
+
             // movement scalar along tangent
-            float movementAlongSlope = speedDifAlongSlope * accelRate;
+            float movementAlongSlope;
+            if (!IsSlopeSliding)
+            {
+                movementAlongSlope = speedDifAlongSlope * accelRate;
+            }
+            else
+            {
+                float slopeAccelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.slopeSlideAccelAmount : Data.slopeSlideDeccelAmount;
+                movementAlongSlope = speedDifAlongSlope * slopeAccelRate;
+            }
 
             // force vector along slope tangent
             Vector2 forceAlongSlope = tangent * movementAlongSlope;
@@ -491,8 +519,6 @@ public class PlayerMovementWithDash : MonoBehaviour
             {
                 IsSlopeSliding = true;
             }
-
-            //Debug.Log(RB.linearVelocity.x);
 
             #region OLD SLOPE CODE
             //SetGravityScale(0);
@@ -511,13 +537,6 @@ public class PlayerMovementWithDash : MonoBehaviour
             //RB.linearVelocity = new Vector2(Data.runMaxSpeed * slopeNormalPerp.x * -_moveInput.x, Data.runMaxSpeed * slopeNormalPerp.y * -_moveInput.x);
             #endregion
         }
-
-
-        /*
-		 * For those interested here is what AddForce() will do
-		 * RB.velocity = new Vector2(RB.velocity.x + (Time.fixedDeltaTime  * speedDif * accelRate) / RB.mass, RB.velocity.y);
-		 * Time.fixedDeltaTime is by default in Unity 0.02 seconds equal to 50 FixedUpdate() calls per second
-		*/
     }
 
     private void Turn()
@@ -658,17 +677,32 @@ public class PlayerMovementWithDash : MonoBehaviour
     void GroundAndSlopeDetection()
     {
         Vector2 origin = _groundCheckPoint.position;
-
-        RaycastHit2D hit = Physics2D.Raycast(
+        RaycastHit2D hit;
+        if (!IsJumping)
+        {
+            hit = Physics2D.Raycast(
             origin,
             Vector2.down,
             _slopeCheckDistance,
             _groundLayer
-        );
+            );
+            // Debug visualize
+            Debug.DrawRay(origin, Vector2.down * (_slopeCheckDistance), Color.green);
+        }
+        else
+        {
+            hit = Physics2D.Raycast(
+            origin,
+            Vector2.down,
+            0,
+            _groundLayer
+            );
+            // Debug visualize
+            Debug.DrawRay(origin, Vector2.down * (0), Color.green);
+        }
 
+        
 
-        // Debug visualize
-        Debug.DrawRay(origin, Vector2.down * (_slopeCheckDistance), Color.green);
 
 
 
@@ -688,7 +722,6 @@ public class PlayerMovementWithDash : MonoBehaviour
             _slopeNormal = hit.normal;
             _slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
             _onSlope = _slopeAngle > 1f;
-            Debug.Log($"Slope angle: {_slopeAngle}");
             OnDownhillSlope = (_slopeNormalPerp.y > 0f && _moveInput.x > 0f) || (_slopeNormalPerp.y < 0f && _moveInput.x < 0f);
 
 

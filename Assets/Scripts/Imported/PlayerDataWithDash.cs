@@ -31,12 +31,12 @@ public class PlayerDataWithDash : ScriptableObject
 
     [Space(20)]
 
-    [Header("Slopes")]
-    public float slopeSpeedMultiplier; //Target speed we want the player to reach while on a slope.
-    public float slopeAcceleration; //The speed at which our player accelerates to max speed on a slope, can be set to slopeMaxSpeed for instant acceleration down to 0 for none at all
-    [HideInInspector] public float slopeAccelAmount; //The actual force (multiplied with speedDiff) applied to the player on a slope.
-    public float slopeDecceleration; //The speed at which our player decelerates from their current speed on a slope, can be set to slopeMaxSpeed for instant deceleration down to 0 for none at all
-    [HideInInspector] public float slopeDeccelAmount; //Actual force (multiplied with speedDiff) applied to the player on a slope.
+    [Header("Slope Slides")]
+    public float slopeSlideSpeedMultiplier; //Target speed we want the player to reach while on a slope.
+    public float slopeSlideAcceleration; //The speed at which our player accelerates to max speed on a slope, can be set to slopeMaxSpeed for instant acceleration down to 0 for none at all
+    [HideInInspector] public float slopeSlideAccelAmount; //The actual force (multiplied with speedDiff) applied to the player on a slope.
+    public float slopeSlideDecceleration; //The speed at which our player decelerates from their current speed on a slope, can be set to slopeMaxSpeed for instant deceleration down to 0 for none at all
+    [HideInInspector] public float slopeSlideDeccelAmount; //Actual force (multiplied with speedDiff) applied to the player on a slope.
 
     [Space(20)]
 
@@ -101,8 +101,11 @@ public class PlayerDataWithDash : ScriptableObject
 		runAccelAmount = (50 * runAcceleration) / runMaxSpeed;
 		runDeccelAmount = (50 * runDecceleration) / runMaxSpeed;
 
-		//Calculate jumpForce using the formula (initialJumpVelocity = gravity * timeToJumpApex)
-		jumpForce = Mathf.Abs(gravityStrength) * jumpTimeToApex;
+        slopeSlideAccelAmount = (50 * slopeSlideAcceleration) / runMaxSpeed * slopeSlideSpeedMultiplier;
+        slopeSlideDeccelAmount = (50 * slopeSlideDecceleration) / runMaxSpeed * slopeSlideSpeedMultiplier;
+
+        //Calculate jumpForce using the formula (initialJumpVelocity = gravity * timeToJumpApex)
+        jumpForce = Mathf.Abs(gravityStrength) * jumpTimeToApex;
 
 		#region Variable Ranges
 		runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
