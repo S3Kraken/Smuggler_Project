@@ -8703,20 +8703,8 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 3126447209294790738, guid: 5635ed8abf88a2b428e9d8193381c7fe, type: 3}
-      propertyPath: jumpFX
-      value: 
-      objectReference: {fileID: 3805328214224085407, guid: 2f4207726de50db4da322efdd6f1fcb4, type: 3}
-    - target: {fileID: 3143743853507741458, guid: 5635ed8abf88a2b428e9d8193381c7fe, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -4099418257374492983, guid: ac4316a5a578f7a4a80c4e5dfca3bd61, type: 3}
-    - target: {fileID: 6185250620405087252, guid: 5635ed8abf88a2b428e9d8193381c7fe, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 1.3333334
-      objectReference: {fileID: 0}
-    - target: {fileID: 6185250620405087252, guid: 5635ed8abf88a2b428e9d8193381c7fe, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 1.3333334
+      propertyPath: _groundLayer.m_Bits
+      value: 62
       objectReference: {fileID: 0}
     - target: {fileID: 8522106209401658839, guid: 5635ed8abf88a2b428e9d8193381c7fe, type: 3}
       propertyPath: m_LocalPosition.x
