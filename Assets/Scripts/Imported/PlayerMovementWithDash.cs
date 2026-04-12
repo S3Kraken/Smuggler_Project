@@ -270,7 +270,7 @@ public class PlayerMovementWithDash : MonoBehaviour
             {
                 SetGravityScale(0);
             }
-            else if (RB.linearVelocity.y < 0 && _moveInput.y < 0 && !IsGrounded)
+            else if (RB.linearVelocity.y < 0 && _moveInput.y < 0)
             {
                 //Much higher gravity if holding down
                 SetGravityScale(Data.gravityScale * Data.fastFallGravityMult);
@@ -440,20 +440,15 @@ public class PlayerMovementWithDash : MonoBehaviour
 
         if (!_onSlope) //If on flat ground, apply a force normally
         {
-            //SetGravityScale(0);
             RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
-            IsSlopeSliding = false;
-            Debug.Log("Not on slope");
         }
-        else if (_onSlope && _moveInput.x == 0 && !IsJumping && !IsDashing && !IsSlopeSliding) //Don't slide down if still on a slope
+        else if (_onSlope && _moveInput.x == 0 && !IsJumping && !IsDashing) //Don't slide down if still on a slope
         {
             RB.linearVelocity = new Vector2(0, 0);
             SetGravityScale(0);
-            Debug.Log("On slope, no input");
         }
         else //Move along slope if on a slope
         {
-            Debug.Log("On slope, input");
             #region MOVE ALONG SLOPE
             // Ensure slopeNormalPerp is a unit tangent that points the same way as positive move input (right along the slope)
             Vector2 tangent = _slopeNormalPerp.normalized;
@@ -463,7 +458,7 @@ public class PlayerMovementWithDash : MonoBehaviour
             
             //Speed up my the slope multiplier if sliding down
             if (IsSlopeSliding)
-                targetSpeedAlongSlope = Data.runMaxSpeed * -Data.slopeSpeedMultiplier;
+                targetSpeedAlongSlope *= Data.slopeSpeedMultiplier;
 
             // current velocity projected onto tangent (signed)
             float currentSpeedAlongSlope = Vector2.Dot(RB.linearVelocity, tangent);
@@ -486,13 +481,29 @@ public class PlayerMovementWithDash : MonoBehaviour
             RB.AddForce(forceAlongSlope, ForceMode2D.Force);
             #endregion
 
-            //Start slope sliding if your press down
-            if (_moveInput.y < 0)
+            //Slope Sliding
+            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
             {
                 IsSlopeSliding = true;
-            }
+                Debug.Log("Started Slope Slide");
+                //if (isDownhill && rb.linearVelocityY < 0 && sliding)
+                //{
+                //    float slopeSpeed = speed * 3f;
+                //    float slopeAccel = 60f * Time.fixedDeltaTime;
+                //    float currentX = rb.linearVelocity.x;
+                //    float targetSlopeVelX = speed * slopeNormalPerp.x * -movex;
+                //    float targetSlopeVelY = speed * slopeNormalPerp.y * -movex;
 
-            //Debug.Log(RB.linearVelocity.x);
+                //    rb.linearVelocity = new Vector2(
+                //        Mathf.MoveTowards(currentX, targetSlopeVelX, slopeAccel),
+                //        Mathf.MoveTowards(rb.linearVelocity.y, targetSlopeVelY, slopeAccel)
+                //    ); ;
+                //}
+            }
+            //else
+            //    IsSlopeSliding = false;
+            //    Debug.Log("Stopped Slope Slide");
+
 
             #region OLD SLOPE CODE
             //SetGravityScale(0);
@@ -534,7 +545,6 @@ public class PlayerMovementWithDash : MonoBehaviour
     #region JUMP METHODS
     private void Jump()
     {
-        IsSlopeSliding = false;
         //Reset gravity in case we were on a slope or wall before jumping
         SetGravityScale(Data.gravityScale);
 
@@ -688,7 +698,6 @@ public class PlayerMovementWithDash : MonoBehaviour
             _slopeNormal = hit.normal;
             _slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
             _onSlope = _slopeAngle > 1f;
-            Debug.Log($"Slope angle: {_slopeAngle}");
             OnDownhillSlope = (_slopeNormalPerp.y > 0f && _moveInput.x > 0f) || (_slopeNormalPerp.y < 0f && _moveInput.x < 0f);
 
 
@@ -713,7 +722,7 @@ public class PlayerMovementWithDash : MonoBehaviour
     }
     public void CheckDirectionToFace(bool isMovingRight)
     {
-        if (isMovingRight != IsFacingRight && !IsSlopeSliding)
+        if (isMovingRight != IsFacingRight)
             Turn();
     }
 

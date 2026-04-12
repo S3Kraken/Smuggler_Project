@@ -147,7 +147,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4099418257374492983, guid: ac4316a5a578f7a4a80c4e5dfca3bd61, type: 3}
+  m_Sprite: {fileID: 3126909867932212084, guid: c5d2092bbff0e57438c1b72b63dcd058, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -226,7 +226,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.3333334, y: 1.3333334}
+    oldSize: {x: 1.25, y: 1.25}
     newSize: {x: 1, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -247,8 +247,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Data: {fileID: 11400000, guid: 690943c393e1478498a55359e54e79f1, type: 2}
-  jumpFX: {fileID: 3805328214224085407, guid: 2f4207726de50db4da322efdd6f1fcb4, type: 3}
-  _slopeCheckDistance: 1
   _groundCheckPoint: {fileID: 9001577054107599089}
   _groundCheckSize: {x: 0.49, y: 0.03}
   _frontWallCheckPoint: {fileID: 2807238257319320793}
