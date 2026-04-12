@@ -8702,6 +8702,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3126447209294790738, guid: 5635ed8abf88a2b428e9d8193381c7fe, type: 3}
+      propertyPath: jumpFX
+      value: 
+      objectReference: {fileID: 3805328214224085407, guid: 2f4207726de50db4da322efdd6f1fcb4, type: 3}
     - target: {fileID: 3143743853507741458, guid: 5635ed8abf88a2b428e9d8193381c7fe, type: 3}
       propertyPath: m_Sprite
       value: 

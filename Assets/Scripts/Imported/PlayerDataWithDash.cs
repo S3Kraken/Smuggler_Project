@@ -29,9 +29,18 @@ public class PlayerDataWithDash : ScriptableObject
 	[Space(5)]
 	public bool doConserveMomentum = true;
 
-	[Space(20)]
+    [Space(20)]
 
-	[Header("Jump")]
+    [Header("Slopes")]
+    public float slopeSpeedMultiplier; //Target speed we want the player to reach while on a slope.
+    public float slopeAcceleration; //The speed at which our player accelerates to max speed on a slope, can be set to slopeMaxSpeed for instant acceleration down to 0 for none at all
+    [HideInInspector] public float slopeAccelAmount; //The actual force (multiplied with speedDiff) applied to the player on a slope.
+    public float slopeDecceleration; //The speed at which our player decelerates from their current speed on a slope, can be set to slopeMaxSpeed for instant deceleration down to 0 for none at all
+    [HideInInspector] public float slopeDeccelAmount; //Actual force (multiplied with speedDiff) applied to the player on a slope.
+
+    [Space(20)]
+
+    [Header("Jump")]
 	public float jumpHeight; //Height of the player's jump
 	public float jumpTimeToApex; //Time between applying the jump force and reaching the desired jump height. These values also control the player's gravity and jump force.
 	[HideInInspector] public float jumpForce; //The actual force applied (upwards) to the player when they jump.
@@ -53,7 +62,7 @@ public class PlayerDataWithDash : ScriptableObject
 
 	[Space(20)]
 
-	[Header("Slide")]
+	[Header("Wall Slide")]
 	public float slideSpeed;
 	public float slideAccel;
 
