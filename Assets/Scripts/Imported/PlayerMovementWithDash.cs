@@ -439,7 +439,7 @@ public class PlayerMovementWithDash : MonoBehaviour
         float movement = speedDif * accelRate;
 
         //Convert this to a vector and apply to rigidbody
-        Debug.Log(RB.linearVelocity);
+        //Debug.Log(RB.linearVelocity);
         if (!_onSlope) //If on flat ground, apply a force normally
         {
             //SetGravityScale(Data.gravityScale);

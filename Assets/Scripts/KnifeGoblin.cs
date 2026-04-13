@@ -9,18 +9,25 @@ using UnityEngine.UIElements;
 public class KnifeGoblin : MonoBehaviour
 {
     Transform player;
+    [SerializeField] BoxCollider2D attackHitbox;
     Animator anim;
 
     Vector2 spawnLoc;
     Vector2 leftEdge;
     Vector2 rightEdge;
 
-    float speed;
-    float chaseSpeed;
+    float lastXPos;
+    float speed = 3;
+    float chaseSpeed = 7;
 
-    bool patrolingRight;
+    float attackCooldown = 5f;
+
+    bool patrolingToSpawn;
     bool patrolingLeft;
-    
+    bool patrolingRight;
+    bool idleDone = true;
+    bool attackIsDone = true;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
@@ -37,58 +44,90 @@ public class KnifeGoblin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        attackCooldown -= Time.deltaTime;
+        CheckFacingDirection();
+
         //check distance to player on x axis
-        if (math.distance(transform.position, player.position) < 5)
+        if (!attackIsDone)
+            return;
+        if (math.distance(transform.position, player.position) < 10)
         {
+            idleDone = true;
             Chase();
         }
-        else if (patrolingRight)
-            PatrolRight();
+        else if (!idleDone)
+            return;
+        else if (patrolingToSpawn)
+            PatrolToSpawn();
         else if (patrolingLeft)
             PatrolLeft();
+        else if (patrolingRight)
+            PatrolRight();
         else
         {
             StartPatrol();
         }
     }
 
+    private void CheckFacingDirection()
+    {
+        if (transform.position.x < lastXPos)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        else if (transform.position.x > lastXPos)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+
+        lastXPos = transform.position.x;
+    }
+
     public void StartPatrol()
     {
-        anim.CrossFade("Run",0,0);
         //get a random number between 1 and 2
-        Random = new Random();
-
-        //Walk to the left if were not at the left edge
-        if (transform.position.x > leftEdge.x)
-        {
-            patrolingLeft = true;
-        }
-        else if (transform.position.x < rightEdge.x)
+        if (UnityEngine.Random.Range(0, 2) == 0)
         {
             patrolingRight = true;
         }
-    }
-    public void PatrolRight()
-    {
-        if (transform.position.x > leftEdge.x)
+        else
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            patrolingLeft = true;
+        }
+    }
+    public void PatrolToSpawn()
+    {
+        anim.CrossFade("Run", 0, 0);
+        if (transform.position.x == spawnLoc.x)
+        {
+            transform.Translate(math.sign(spawnLoc.x - transform.position.x) * Time.deltaTime * speed, 0, 0);
+        }
+        else
+        {
+            StartCoroutine(nameof(Idle));
+            patrolingToSpawn = false;
+        }
+    }
+    public void PatrolLeft()
+    {
+        anim.CrossFade("Run", 0, 0);
+        if (transform.position.x >= leftEdge.x)
+        {
             transform.Translate(Vector2.left * Time.deltaTime * speed);
         }
         else
         {
             StartCoroutine(nameof(Idle));
-            patrolingRight = false;
+            patrolingLeft = false;
 
         }
     }
 
-    public void PatrolLeft()
+    public void PatrolRight()
     {
-        if (transform.position.x < rightEdge.x)
+        anim.CrossFade("Run", 0, 0);
+        if (transform.position.x <= rightEdge.x)
         {
-            transform.localScale = new Vector3(1, 1, 1);
             transform.Translate(Vector2.right * Time.deltaTime * speed);
         }
         else
@@ -100,13 +139,31 @@ public class KnifeGoblin : MonoBehaviour
 
     public void Chase()
     {
+        anim.CrossFade("Run", 0, 0);
+
         //move towards player x
-        transform.movetow
+        transform.Translate(math.sign(player.position.x - transform.position.x) * chaseSpeed * Time.deltaTime, 0, 0);
+
+        if (math.distance(transform.position, player.position) < 2)
+        {
+            StartCoroutine(nameof(Attack));
+        }
     }
+    public IEnumerator Attack()
+    {
+        attackIsDone = false;
+        anim.CrossFade("Attack", 0, 0);
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
+        attackIsDone = true;
+    }
+    
 
     private IEnumerator Idle()
     {
+        idleDone = false;
+        Debug.Log("Idle");
         anim.CrossFade(nameof(Idle), 0, 0);
         yield return new WaitForSeconds(3f);
+        idleDone = true;
     }
 }
