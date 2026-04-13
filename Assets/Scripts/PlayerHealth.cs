@@ -8,6 +8,9 @@ public class PlayerHealth : MonoBehaviour
     public float currentHealth { get; set; }
     public float iFrames { get; set; }
 
+    PlayerMovementWithDash playerMovement;
+    Animator anim;
+
     TMPro.TextMeshProUGUI healthText;
     bool shielded = false;
     bool alphaReset = false;
@@ -18,6 +21,9 @@ public class PlayerHealth : MonoBehaviour
     {
         healthText = GameObject.Find("Health (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
         shield = GameObject.Find("ShieldPickup");
+
+        playerMovement = GetComponent<PlayerMovementWithDash>();
+        anim = GetComponent<Animator>();
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -66,15 +72,24 @@ public class PlayerHealth : MonoBehaviour
                 return;
             }
 
+            anim.CrossFade("Damaged", 0, 0);
+            playerMovement.LockState = anim.GetCurrentAnimatorStateInfo(0).length;
+
             currentHealth -= amount;
             if (currentHealth <= 0)
             {
-                currentHealth = 0;
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                Die();
             }
             healthText.text = "Health: " + currentHealth;
         }
     }
+
+    private void Die()
+    {
+        currentHealth = 0;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void Flicker()
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -111,6 +126,10 @@ public class PlayerHealth : MonoBehaviour
                 default:
                     break;
             }
+        }
+        else if (collision.gameObject.name == "DeathPlane")
+        {
+            Die();
         }
     }
 }

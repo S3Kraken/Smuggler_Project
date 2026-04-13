@@ -71,6 +71,9 @@ public class PlayerMovementWithDash : MonoBehaviour
     public bool IsSlopeSliding { get; private set; }
     public bool WasOnSlope { get; private set; }
 
+    //Animations
+    public float LockState { get; set; }
+
     //Text
     [SerializeField] bool showVelocity;
 
@@ -331,22 +334,31 @@ public class PlayerMovementWithDash : MonoBehaviour
 
         #region ANIMATION CHECKS
 
-        if (Mathf.Abs(RB.linearVelocity.x) > 0.1f && !IsJumping && !IsFalling)
+        if (LockState >= 0)
         {
-            anim.CrossFade("Run", 0, 0);
+            LockState -= Time.deltaTime;
+            return;
         }
-        else if (IsJumping)
+        else
         {
-            anim.CrossFade("Jumping", 0, 0);
+            if (Mathf.Abs(RB.linearVelocity.x) > 0.1f && !IsJumping && !IsFalling)
+            {
+                anim.CrossFade("Run", 0, 0);
+            }
+            else if (IsJumping)
+            {
+                anim.CrossFade("Jumping", 0, 0);
+            }
+            else if (RB.linearVelocity.y < 0 && LastOnGroundTime < 0.1f && !IsJumping)
+            {
+                anim.CrossFade("Falling", 0, 0);
+            }
+            else if (!IsJumping && !IsFalling)
+            {
+                anim.CrossFade("Idle", 0, 0);
+            }
         }
-        else if (RB.linearVelocity.y < 0 && LastOnGroundTime < 0.1f && !IsJumping)
-        {
-            anim.CrossFade("Falling", 0, 0);
-        }
-        else if (!IsJumping && !IsFalling)
-        {
-            anim.CrossFade("Idle", 0, 0);
-        }
+
         #endregion
 
         #region SET TEXT

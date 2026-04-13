@@ -7461,8 +7461,8 @@ GameObject:
   - component: {fileID: 1595727678}
   - component: {fileID: 1595727680}
   - component: {fileID: 1595727679}
-  m_Layer: 0
-  m_Name: Square (3)
+  m_Layer: 2
+  m_Name: DeathPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7477,8 +7477,8 @@ Transform:
   m_GameObject: {fileID: 1595727677}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -107.04, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 219.1888, y: -107.0153, z: 0}
+  m_LocalScale: {x: 512.3932, y: 1.0494, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1736696920}
@@ -7513,7 +7513,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
