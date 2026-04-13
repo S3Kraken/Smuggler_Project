@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: f213752350d513e438f411ffb4c01155
+guid: c30e341fc595a5b4886c45113d6119c3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5702766072548976018
-    second: hit_sparkle_anim_strip_4_0
-  - first:
-      213: -3712070095467908123
-    second: hit_sparkle_anim_strip_4_1
+      213: -7195205417973849666
+    second: herochar_after_jump_dust_anim_strip_4_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: hit_sparkle_anim_strip_4_0
+      name: herochar_after_jump_dust_anim_strip_4_0
       rect:
         serializedVersion: 2
         x: 0
@@ -118,14 +115,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2956e67478b442f40800000000000000
-      internalID: 5702766072548976018
+      spriteID: eb1e3bf4bce752c90800000000000000
+      internalID: -7195205417973849666
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: hit_sparkle_anim_strip_4_1
+      name: herochar_after_jump_dust_anim_strip_4_1
       rect:
         serializedVersion: 2
         x: 16
@@ -138,16 +135,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5e3f8426ae31c7cc0800000000000000
-      internalID: -3712070095467908123
+      spriteID: 4a65a7e9db9814c4898b93d5c47b7cd1
+      internalID: 1308549285
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: hit_sparkle_anim_strip_4_2
+      name: herochar_after_jump_dust_anim_strip_4_2
       rect:
         serializedVersion: 2
         x: 32
@@ -162,14 +159,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1ff8368561ec0044fb6c23a46b8d99d3
-      internalID: -34442010
+      spriteID: d132ed2c510834140acdd1ed496f7d27
+      internalID: 764129336
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: hit_sparkle_anim_strip_4_3
+      name: herochar_after_jump_dust_anim_strip_4_3
       rect:
         serializedVersion: 2
         x: 48
@@ -184,8 +181,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4a8a5671abb5c464ea59fb2f7fd481fa
-      internalID: -260956753
+      spriteID: fcc6f931e2165f447b738789d3f225c3
+      internalID: -195658149
       vertices: []
       indices: 
       edges: []
@@ -194,7 +191,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: ae5b11560738f914aacc2fdcb76bd1db
+    spriteID: 4d15267c3d632f54d97e406bf6d44814
     internalID: 0
     vertices: []
     indices: 
@@ -204,10 +201,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      hit_sparkle_anim_strip_4_0: 5702766072548976018
-      hit_sparkle_anim_strip_4_1: -3712070095467908123
-      hit_sparkle_anim_strip_4_2: -34442010
-      hit_sparkle_anim_strip_4_3: -260956753
+      herochar_after_jump_dust_anim_strip_4_0: -7195205417973849666
+      herochar_after_jump_dust_anim_strip_4_1: 1308549285
+      herochar_after_jump_dust_anim_strip_4_2: 764129336
+      herochar_after_jump_dust_anim_strip_4_3: -195658149
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

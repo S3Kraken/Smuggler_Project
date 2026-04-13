@@ -1,13 +1,16 @@
 fileFormatVersion: 2
-guid: f213752350d513e438f411ffb4c01155
+guid: f8d9515005f6deb4785fcdfbd4a10490
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5702766072548976018
-    second: hit_sparkle_anim_strip_4_0
+      213: -4454485551354414918
+    second: goblin_death_anim_strip_6_0
   - first:
-      213: -3712070095467908123
-    second: hit_sparkle_anim_strip_4_1
+      213: 6609010165032081395
+    second: goblin_death_anim_strip_6_1
+  - first:
+      213: -6310726310726893129
+    second: goblin_death_anim_strip_6_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -54,7 +57,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 12
+  spritePixelsToUnits: 6
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -103,7 +106,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: hit_sparkle_anim_strip_4_0
+      name: goblin_death_anim_strip_6_0
       rect:
         serializedVersion: 2
         x: 0
@@ -118,14 +121,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2956e67478b442f40800000000000000
-      internalID: 5702766072548976018
+      spriteID: ab8f86eedfc7e22c0800000000000000
+      internalID: -4454485551354414918
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: hit_sparkle_anim_strip_4_1
+      name: goblin_death_anim_strip_6_1
       rect:
         serializedVersion: 2
         x: 16
@@ -140,14 +143,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5e3f8426ae31c7cc0800000000000000
-      internalID: -3712070095467908123
+      spriteID: 3f7dea3aabbe7bb50800000000000000
+      internalID: 6609010165032081395
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: hit_sparkle_anim_strip_4_2
+      name: goblin_death_anim_strip_6_2
       rect:
         serializedVersion: 2
         x: 32
@@ -160,16 +163,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 1ff8368561ec0044fb6c23a46b8d99d3
-      internalID: -34442010
+      spriteID: 7b189662bdbcb68a0800000000000000
+      internalID: -6310726310726893129
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: hit_sparkle_anim_strip_4_3
+      name: goblin_death_anim_strip_6_3
       rect:
         serializedVersion: 2
         x: 48
@@ -184,8 +187,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4a8a5671abb5c464ea59fb2f7fd481fa
-      internalID: -260956753
+      spriteID: eada91e05c1c6eb47b018dd85e793f93
+      internalID: 1175729701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: goblin_death_anim_strip_6_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e9aef3bc834453489f4b7eba2694914
+      internalID: 590914433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: goblin_death_anim_strip_6_5
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 12c608ec643f7bc4faf0d08004f36655
+      internalID: 525997568
       vertices: []
       indices: 
       edges: []
@@ -194,7 +241,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: ae5b11560738f914aacc2fdcb76bd1db
+    spriteID: 918a14c11df913c45a1597374b7904bb
     internalID: 0
     vertices: []
     indices: 
@@ -204,10 +251,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      hit_sparkle_anim_strip_4_0: 5702766072548976018
-      hit_sparkle_anim_strip_4_1: -3712070095467908123
-      hit_sparkle_anim_strip_4_2: -34442010
-      hit_sparkle_anim_strip_4_3: -260956753
+      goblin_death_anim_strip_6_0: -4454485551354414918
+      goblin_death_anim_strip_6_1: 6609010165032081395
+      goblin_death_anim_strip_6_2: -6310726310726893129
+      goblin_death_anim_strip_6_3: 1175729701
+      goblin_death_anim_strip_6_4: 590914433
+      goblin_death_anim_strip_6_5: 525997568
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
