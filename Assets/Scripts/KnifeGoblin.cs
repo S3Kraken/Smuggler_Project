@@ -166,4 +166,12 @@ public class KnifeGoblin : MonoBehaviour
         yield return new WaitForSeconds(3f);
         idleDone = true;
     }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerHealth>().TakeDamage(20);
+        }
+    }
 }

@@ -15,11 +15,14 @@ public class BreakableWall : MonoBehaviour
         
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collider.gameObject.tag == "Player")
         {
-            Destroy(gameObject);
+            //get the player's velocity
+            Rigidbody2D playerRB = collider.gameObject.GetComponent<Rigidbody2D>();
+            if (playerRB.linearVelocity.x > 40)
+                Destroy(gameObject);
         }
     }
 }

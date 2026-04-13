@@ -78,6 +78,7 @@ GameObject:
   - component: {fileID: 8201764301833221599}
   - component: {fileID: 5734242359277683515}
   - component: {fileID: 405493205467026890}
+  - component: {fileID: 8814326893941997058}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -246,7 +247,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b18281f9b2e214da7b93bb3a0ffe4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data: {fileID: 11400000, guid: 690943c393e1478498a55359e54e79f1, type: 2}
+  currentData: {fileID: 0}
+  lightData: {fileID: 11400000, guid: 690943c393e1478498a55359e54e79f1, type: 2}
+  mediumData: {fileID: 11400000, guid: 4bbaed5c7455b0240a76eafee1d2e1ed, type: 2}
+  heavyData: {fileID: 11400000, guid: a4f07b1ad646ff74d9078e9a12fc8b09, type: 2}
   jumpFX: {fileID: 3805328214224085407, guid: 2f4207726de50db4da322efdd6f1fcb4, type: 3}
   _slopeCheckDistance: 1
   _groundCheckPoint: {fileID: 9001577054107599089}
@@ -319,6 +323,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8814326893941997058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533326203725276045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc6b4eca235c37f46955a69a70cb6c14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7579978532001062678
 GameObject:
   m_ObjectHideFlags: 0
