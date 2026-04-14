@@ -20,7 +20,6 @@ public class KnifeGoblin : MonoBehaviour
     float speed = 3;
     float chaseSpeed = 7;
 
-    float attackCooldown = 5f;
 
     bool patrolingToSpawn;
     bool patrolingLeft;
@@ -44,7 +43,6 @@ public class KnifeGoblin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        attackCooldown -= Time.deltaTime;
         CheckFacingDirection();
 
         //check distance to player on x axis
@@ -161,7 +159,6 @@ public class KnifeGoblin : MonoBehaviour
     private IEnumerator Idle()
     {
         idleDone = false;
-        Debug.Log("Idle");
         anim.CrossFade(nameof(Idle), 0, 0);
         yield return new WaitForSeconds(3f);
         idleDone = true;

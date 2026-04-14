@@ -26,6 +26,11 @@ MonoBehaviour:
   accelInAir: 0
   deccelInAir: 0
   doConserveMomentum: 1
+  slopeSlideSpeedMultiplier: 0
+  slopeSlideAcceleration: 0
+  slopeSlideAccelAmount: NaN
+  slopeSlideDecceleration: 0
+  slopeSlideDeccelAmount: NaN
   jumpHeight: 0
   jumpTimeToApex: 0
   jumpForce: NaN
