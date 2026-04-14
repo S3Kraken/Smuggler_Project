@@ -38,11 +38,11 @@ public class BombGoblin : MonoBehaviour
         {
             return;
         }
-        else if (math.distance(transform.position.x, player.position.x) <= 10 && attackCooldown < 0)
+        else if (math.distance(transform.position.x, player.position.x) <= 15 && attackCooldown < 0)
         {
             StartCoroutine(nameof(Attack));
         }
-        else if (math.distance(transform.position.x, player.position.x) <= 20 && attackCooldown < 0)
+        else if (math.distance(transform.position.x, player.position.x) <= 25 && attackCooldown < 0)
         {
             LayBombs();
         }
@@ -67,11 +67,12 @@ public class BombGoblin : MonoBehaviour
     }
     public IEnumerator Attack()
     {
-        Debug.Log("Attacking");
         anim.CrossFade("Attack", 0, 0);
-        //lockState = anim.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
-        Bomb spawnedBomb = Instantiate(bomb, transform.position, quaternion.identity).GetComponent<Bomb>();
+        lockState = anim.GetCurrentAnimatorStateInfo(0).length;
+        attackCooldown = 3 + anim.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(.19f/.60f);
+
+        Bomb spawnedBomb = Instantiate(bomb, transform.position + new Vector3(-0.669f, 0.82f, 0), quaternion.identity).GetComponent<Bomb>();
         if (facingRight)
         {
             spawnedBomb.Launch(Vector2.right);
@@ -80,8 +81,6 @@ public class BombGoblin : MonoBehaviour
         {
             spawnedBomb.Launch(Vector2.left);
         }
-
-        attackCooldown = 2f;
     }
 
 

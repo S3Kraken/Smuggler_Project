@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bomb : MonoBehaviour
@@ -6,12 +7,15 @@ public class Bomb : MonoBehaviour
     Transform player;
     Animator anim;
     Rigidbody2D rb;
-    bool grounded;
+    bool grounded = false;
+    //Vector3 groundCheckPos;
+    [SerializeField] Vector2 _groundCheckSize = new Vector2(0.49f, 0.03f);
+    [SerializeField] float yOffset = 0.12253f;
 
-    LayerMask _groundLayer;
+    [SerializeField] LayerMask _groundLayer;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         player = GameObject.Find("Player").GetComponent<Transform>();
         anim = GetComponent<Animator>();
@@ -21,11 +25,13 @@ public class Bomb : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Physics2D.OverlapBox(transform.position, new Vector2(3,3), 0, _groundLayer) && !grounded) //checks if set box overlaps with ground
+        Vector3 bottom = GetComponent<Renderer>().bounds.center - transform.up * GetComponent<Renderer>().bounds.extents.y;
+        if (Physics2D.OverlapBox(transform.position - (Vector3.up * transform.localScale.y / 1.6f), _groundCheckSize, 0, _groundLayer) && !grounded) //checks if set box overlaps with ground
         {
             StartCoroutine(nameof(Grounded));
+            rb.linearVelocity = new Vector2(0,0);
+            rb.gravityScale = 0;
         }
-
     }
 
     public void Launch(Vector2 facing)
@@ -35,24 +41,47 @@ public class Bomb : MonoBehaviour
 
         //arc towards player
         Vector2 direction = (player.position - transform.position).normalized;
-        rb.linearVelocity = direction * 5f;
+        rb.linearVelocity = direction * 10f;
         anim.CrossFade("Thrown", 0, 0);
     }
-    public IEnumerable Grounded()
+    public IEnumerator Grounded()
     {
         grounded = true;
         anim.CrossFade("Ground", 0, 0);
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
+        Debug.Log(!anim.GetCurrentAnimatorStateInfo(0).IsName("Explode"));
         if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Explode"))
         {
+            Debug.Log("Exploding");
             StartCoroutine(nameof(Explode));
         }
     }
 
-    public IEnumerable Explode()
+    public IEnumerator Explode()
     {
+        rb.linearVelocity = new Vector2(0, 0);
+        rb.gravityScale = 0;
+
         anim.CrossFade("Explode", 0, 0);
+        transform.position = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z);
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
         Destroy(this.gameObject);
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(new Vector3 (transform.position.x, transform.position.y -0.6665f +  yOffset, transform.position.z), _groundCheckSize);
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerHealth>().TakeDamage(30);
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Explode"))
+            {
+                StartCoroutine(nameof(Explode));
+            }
+        }
     }
 }
