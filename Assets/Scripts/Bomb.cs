@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bomb : MonoBehaviour
 {
-    Transform player;
+    Vector3 playerPos;
     Animator anim;
     Rigidbody2D rb;
     bool grounded = false;
@@ -17,7 +17,7 @@ public class Bomb : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        player = GameObject.Find("Player").GetComponent<Transform>();
+        playerPos = GameObject.Find("Player").transform.position;
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
     }
@@ -34,25 +34,33 @@ public class Bomb : MonoBehaviour
         }
     }
 
-    public void Launch(Vector2 facing)
+    public void Launch(Vector2 facing, bool inRange)
     {
         if (facing == Vector2.left)
             transform.localScale = new Vector3(-1, 1, 1);
+        if (inRange)
+        {
+            //arc towards player
+            Vector2 direction = (playerPos + new Vector3(0,5,0) - transform.position).normalized;
+            rb.linearVelocity = direction * 10f;
+            anim.CrossFade("Thrown", 0, 0);
 
-        //arc towards player
-        Vector2 direction = (player.position - transform.position).normalized;
-        rb.linearVelocity = direction * 10f;
-        anim.CrossFade("Thrown", 0, 0);
+        }
+        else
+        {
+            Vector2 direction = (transform.position + new Vector3(15 * facing.x, 5, 0) - transform.position).normalized;
+            rb.linearVelocity = direction * 10f;
+            anim.CrossFade("Thrown", 0, 0);
+            Debug.Log("Launched bomb in direction: " + facing);
+        }
     }
     public IEnumerator Grounded()
     {
         grounded = true;
         anim.CrossFade("Ground", 0, 0);
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
-        Debug.Log(!anim.GetCurrentAnimatorStateInfo(0).IsName("Explode"));
         if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Explode"))
         {
-            Debug.Log("Exploding");
             StartCoroutine(nameof(Explode));
         }
     }

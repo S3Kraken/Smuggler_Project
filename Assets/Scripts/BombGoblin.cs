@@ -40,11 +40,11 @@ public class BombGoblin : MonoBehaviour
         }
         else if (math.distance(transform.position.x, player.position.x) <= 15 && attackCooldown < 0)
         {
-            StartCoroutine(nameof(Attack));
+            StartCoroutine(nameof(Attack), true);
         }
         else if (math.distance(transform.position.x, player.position.x) <= 25 && attackCooldown < 0)
         {
-            LayBombs();
+            StartCoroutine(nameof(Attack), false);
         }
         else
         {
@@ -65,7 +65,7 @@ public class BombGoblin : MonoBehaviour
             facingRight = true;
         }
     }
-    public IEnumerator Attack()
+    public IEnumerator Attack(bool inRange)
     {
         anim.CrossFade("Attack", 0, 0);
         lockState = anim.GetCurrentAnimatorStateInfo(0).length;
@@ -75,11 +75,11 @@ public class BombGoblin : MonoBehaviour
         Bomb spawnedBomb = Instantiate(bomb, transform.position + new Vector3(-0.669f, 0.82f, 0), quaternion.identity).GetComponent<Bomb>();
         if (facingRight)
         {
-            spawnedBomb.Launch(Vector2.right);
+            spawnedBomb.Launch(Vector2.right, inRange);
         }
         else
         {
-            spawnedBomb.Launch(Vector2.left);
+            spawnedBomb.Launch(Vector2.left, inRange);
         }
     }
 
@@ -88,12 +88,6 @@ public class BombGoblin : MonoBehaviour
     {
         anim.CrossFade(nameof(Idle), 0, 0);
     }
-
-    public void LayBombs()
-    {
-        return;
-    }
-
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
