@@ -1,0 +1,242 @@
+fileFormatVersion: 2
+guid: 99b7e958d1bcba943bd78027e08a9b86
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4052978572657157380
+    second: RoofTopStage1.0 1_0
+  - first:
+      213: -5749029373886452350
+    second: RoofTopStage1.0 1_1
+  - first:
+      213: -2477193912191609278
+    second: RoofTopStage1.0 1_2
+  - first:
+      213: 6656832408373491172
+    second: RoofTopStage1.0 1_3
+  - first:
+      213: -1491295624448298691
+    second: RoofTopStage1.0 1_4
+  - first:
+      213: -2115202227656132640
+    second: RoofTopStage1.0 1_5
+  - first:
+      213: -8872161238758623627
+    second: RoofTopStage1.0 1_6
+  - first:
+      213: 3278239946783078088
+    second: RoofTopStage1.0 1_7
+  - first:
+      213: -8975545630361628618
+    second: RoofTopStage1.0 1_8
+  - first:
+      213: 8334206946161092204
+    second: RoofTopStage1.0 1_9
+  - first:
+      213: 1732939216805252507
+    second: RoofTopStage1.0 1_10
+  - first:
+      213: 7222083521045689168
+    second: RoofTopStage1.0 1_11
+  - first:
+      213: 3950328042504811466
+    second: RoofTopStage1.0 1_12
+  - first:
+      213: -1699548058063507098
+    second: RoofTopStage1.0 1_13
+  - first:
+      213: 7748503204176933564
+    second: RoofTopStage1.0 1_14
+  - first:
+      213: 2561400359466679491
+    second: RoofTopStage1.0 1_15
+  - first:
+      213: 7614261082984673011
+    second: RoofTopStage1.0 1_16
+  - first:
+      213: 2054434784339164520
+    second: RoofTopStage1.0 1_17
+  - first:
+      213: -1644407649449256262
+    second: RoofTopStage1.0 1_18
+  - first:
+      213: 450396460703179897
+    second: RoofTopStage1.0 1_19
+  - first:
+      213: -8777142607056481232
+    second: RoofTopStage1.0 1_20
+  - first:
+      213: -5523070658536510132
+    second: RoofTopStage1.0 1_21
+  - first:
+      213: -2736355681168550216
+    second: RoofTopStage1.0 1_22
+  - first:
+      213: -2333090461232017003
+    second: RoofTopStage1.0 1_23
+  - first:
+      213: 6762415794413872837
+    second: RoofTopStage1.0 1_24
+  - first:
+      213: -5054533792734485264
+    second: RoofTopStage1.0 1_25
+  - first:
+      213: -238704961019813999
+    second: RoofTopStage1.0 1_26
+  - first:
+      213: -8762579485738487027
+    second: RoofTopStage1.0 1_27
+  - first:
+      213: 4942786136310922126
+    second: RoofTopStage1.0 1_28
+  - first:
+      213: -5421872555312720862
+    second: RoofTopStage1.0 1_29
+  - first:
+      213: 2400464754032955277
+    second: RoofTopStage1.0 1_30
+  - first:
+      213: 8845766995128691140
+    second: RoofTopStage1.0 1_31
+  - first:
+      213: 821869111981327497
+    second: RoofTopStage1.0 1_32
+  - first:
+      213: 8409360799415987387
+    second: RoofTopStage1.0 1_33
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: RoofTopStage1.0 1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1536
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfa1086367de0c7c0800000000000000
+      internalID: -4052978572657157380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: b3281b229094ad9469764ce3cccaa85d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      RoofTopStage1.0 1_0: -4052978572657157380
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
