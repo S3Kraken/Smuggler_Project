@@ -95,9 +95,9 @@ public class KnifeGoblin : MonoBehaviour
     }
     public void PatrolToSpawn()
     {
-        anim.CrossFade("Run", 0, 0);
         if (transform.position.x == spawnLoc.x)
         {
+            anim.CrossFade("Run", 0, 0);
             transform.Translate(math.sign(spawnLoc.x - transform.position.x) * Time.deltaTime * speed, 0, 0);
         }
         else
@@ -108,9 +108,9 @@ public class KnifeGoblin : MonoBehaviour
     }
     public void PatrolLeft()
     {
-        anim.CrossFade("Run", 0, 0);
         if (transform.position.x >= leftEdge.x)
         {
+            anim.CrossFade("Run", 0, 0);
             transform.Translate(Vector2.left * Time.deltaTime * speed);
         }
         else
@@ -123,9 +123,9 @@ public class KnifeGoblin : MonoBehaviour
 
     public void PatrolRight()
     {
-        anim.CrossFade("Run", 0, 0);
         if (transform.position.x <= rightEdge.x)
         {
+            anim.CrossFade("Run", 0, 0);
             transform.Translate(Vector2.right * Time.deltaTime * speed);
         }
         else

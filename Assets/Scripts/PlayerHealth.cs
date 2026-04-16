@@ -1,4 +1,3 @@
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -45,6 +44,19 @@ public class PlayerHealth : MonoBehaviour
         {
             alphaReset = true;
             EndFlicker();
+        }
+
+        //remove later
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (SceneManager.GetActiveScene().buildIndex == 0)
+            {
+                SceneManager.LoadScene(1);
+            }
+            else
+            {
+                SceneManager.LoadScene(0);
+            }
         }
     }
     public void Heal(float amount)
