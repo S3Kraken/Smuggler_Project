@@ -20,15 +20,19 @@ public class SongPlayer : MonoBehaviour
         {
             aud.clip = Resources.Load<AudioClip>("Music/");
         }
-        else if (SceneManager.GetActiveScene().buildIndex == 1) //Alleyways
+        else if (SceneManager.GetActiveScene().buildIndex == 1) //Tutorial
         {
             aud.clip = Resources.Load<AudioClip>("Music/");
         }
-        else if (SceneManager.GetActiveScene().buildIndex == 2) //RoofTops
+        else if (SceneManager.GetActiveScene().buildIndex == 2) //Alleyways
         {
             aud.clip = Resources.Load<AudioClip>("Music/");
         }
-        else if (SceneManager.GetActiveScene().buildIndex == 3) //Sewer
+        else if (SceneManager.GetActiveScene().buildIndex == 3) //RoofTops
+        {
+            aud.clip = Resources.Load<AudioClip>("Music/");
+        }
+        else if (SceneManager.GetActiveScene().buildIndex == 4) //Sewer
         {
             //Get a random number that's between 0 or 1. if its 0 play the first song and if its one play the other song
             if (Random.Range(0,2) == 0)

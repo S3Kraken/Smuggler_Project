@@ -24,6 +24,9 @@ public class MainMenu : MonoBehaviour
     {
         switch (levelNum)
         {
+            case 0:
+                SceneManager.LoadSceneAsync("TutorialStage");
+                break;
             case 1:
                 SceneManager.LoadSceneAsync("AlleywayStage");
                 break;
