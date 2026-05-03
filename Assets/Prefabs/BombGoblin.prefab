@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 8113201486059412925}
   - component: {fileID: 1964896911577725309}
   - component: {fileID: 8951185310479590203}
-  m_Layer: 0
+  - component: {fileID: 6407135355571063471}
+  m_Layer: 6
   m_Name: BombGoblin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,3 +172,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bomb: {fileID: 8166708509700280055, guid: 0c2737e0eec1d81438f059e9ad278b1f, type: 3}
+--- !u!114 &6407135355571063471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8142283007341837670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_Priority: 0
+  m_ComponentVersion: 5
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_AlphaCutoff: 0.1
+  m_ApplyToSortingLayers: 6fd560bb00000000331da1a6
+  m_ShapePath:
+  - {x: -1.3333321, y: -1.3333334, z: 0}
+  - {x: -1.3333321, y: 1.3333334, z: 0}
+  - {x: 1.3333321, y: 1.3333334, z: 0}
+  - {x: 1.3333321, y: -1.3333334, z: 0}
+  m_ShapePathHash: 0
+  m_InstanceId: 0
+  m_ShadowShape2DComponent: {fileID: 3315878855674229483}
+  m_ShadowShape2DProvider:
+    rid: 7914022242704687615
+  m_ShadowCastingSource: 2
+  m_ShadowMesh:
+    m_Mesh: {fileID: 0}
+    m_LocalBounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 1.2333221, y: 1.2333221, z: 0}
+    m_EdgeProcessing: 1
+    m_TrimEdge: 0.1
+    m_FlipX: 0
+    m_FlipY: 0
+    m_InitialTrim: 0
+  m_CastingOption: 1
+  m_PreviousTrimEdge: 0.1
+  m_PreviousEdgeProcessing: 1
+  m_PreviousShadowCastingSource: 2
+  m_PreviousShadowShape2DSource: {fileID: 3315878855674229483}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7914022242704687615
+      type: {class: ShadowShape2DProvider_SpriteRenderer, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
+      data: 
