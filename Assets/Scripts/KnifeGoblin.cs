@@ -151,9 +151,9 @@ public class KnifeGoblin : MonoBehaviour
     {
         attackIsDone = false;
         anim.CrossFade("Attack", 0, 0);
-        attackHitbox.enabled = true;
+        attackHitbox.gameObject.SetActive(true);
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
-        attackHitbox.enabled = false;
+        attackHitbox.gameObject.SetActive(false);
         attackIsDone = true;
     }
     
@@ -166,7 +166,7 @@ public class KnifeGoblin : MonoBehaviour
         idleDone = true;
     }
 
-    public void OnTriggerEnter2D(Collider2D collision)
+    public void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
