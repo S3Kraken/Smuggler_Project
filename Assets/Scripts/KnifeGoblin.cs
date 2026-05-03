@@ -151,7 +151,9 @@ public class KnifeGoblin : MonoBehaviour
     {
         attackIsDone = false;
         anim.CrossFade("Attack", 0, 0);
+        attackHitbox.enabled = true;
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
+        attackHitbox.enabled = false;
         attackIsDone = true;
     }
     
