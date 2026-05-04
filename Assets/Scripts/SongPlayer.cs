@@ -17,7 +17,7 @@ public class SongPlayer : MonoBehaviour
         aud = GetComponent<AudioSource>();
         if (SceneManager.GetActiveScene().buildIndex == 0) //Mainmenu
         {
-            aud.clip = Resources.Load<AudioClip>("Music/");
+            aud.clip = Resources.Load<AudioClip>("Music/Shy_Bandit's_Theme");
         }
         else if (SceneManager.GetActiveScene().buildIndex == 1) //Tutorial
         {
