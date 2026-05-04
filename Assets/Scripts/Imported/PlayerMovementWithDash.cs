@@ -7,6 +7,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovementWithDash : MonoBehaviour
 {
@@ -128,6 +129,23 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     private void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            weight = "light";
+            SetWeight();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            weight = "medium";
+            SetWeight();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            weight = "heavy";
+            SetWeight();
+        }
+
         #region TIMERS
         LastOnGroundTime -= Time.deltaTime;
         LastOnWallTime -= Time.deltaTime;
@@ -155,7 +173,7 @@ public class PlayerMovementWithDash : MonoBehaviour
             OnJumpUpInput();
         }
 
-        if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Mouse0))
         {
             OnDashInput();
         }
