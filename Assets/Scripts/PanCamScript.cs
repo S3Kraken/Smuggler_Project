@@ -18,6 +18,7 @@ public class PanCamScript : MonoBehaviour
         moveAction = inputActions.FindAction("Move");  // "Move" = your action name
         player = GameObject.Find("Player");
         moveAction.Enable();
+        ResetSpeed();
     }
 
     private void FixedUpdate()
@@ -61,7 +62,6 @@ public class PanCamScript : MonoBehaviour
         }
 
         transform.Translate(smoothVelocity * Time.fixedDeltaTime, Space.World);
-
     }
 
     //private void OnMove(Vector2 v)

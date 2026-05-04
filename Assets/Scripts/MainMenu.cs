@@ -18,24 +18,26 @@ public class MainMenu : MonoBehaviour
     public void Play()
     {
         SceneManager.LoadSceneAsync("RoofTopStage");
+        GameSettings.isInLevelSelect = false;
     }
 
     public void loadLevel(int levelNum)
     {
         switch (levelNum)
         {
-            case 0:
-                SceneManager.LoadSceneAsync("TutorialStage");
-                break;
             case 1:
-                SceneManager.LoadSceneAsync("AlleywayStage");
+                SceneManager.LoadSceneAsync("TutorialStage");
                 break;
             case 2:
                 SceneManager.LoadSceneAsync("RoofTopStage");
                 break;
             case 3:
+                SceneManager.LoadSceneAsync("AlleywayStage");
+                break;
+            case 4:
                 SceneManager.LoadSceneAsync("SewerStage");
                 break;
         }
+        GameSettings.isInLevelSelect = true;
     }
 }

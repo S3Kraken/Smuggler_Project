@@ -74,6 +74,7 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     //Text
     [SerializeField] bool showVelocity;
+    [SerializeField] bool startFlipped;
 
     #endregion
 
@@ -121,6 +122,8 @@ public class PlayerMovementWithDash : MonoBehaviour
     {
         SetGravityScale(currentData.gravityScale);
         IsFacingRight = true;
+        if (startFlipped)
+            Turn();
     }
 
     private void Update()
