@@ -6,7 +6,7 @@ public class LevelTransition : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision != null && collision.CompareTag("Player"))
+        if (collision != null && collision.gameObject.CompareTag("Player"))
         {
             switch (SceneManager.GetActiveScene().buildIndex)
             {

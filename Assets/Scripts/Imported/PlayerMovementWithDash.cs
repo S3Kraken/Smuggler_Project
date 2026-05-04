@@ -484,17 +484,21 @@ public class PlayerMovementWithDash : MonoBehaviour
             RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
             IsSlopeSliding = false;
             WasOnSlope = false;
+            _slopeCheckDistance = 1;
             //Debug.Log("Not on slope");
         }
         else if (_onSlope && _moveInput.x == 0 && !IsJumping && !IsDashing && !IsSlopeSliding) //Don't slide down if still on a slope
         {
             RB.linearVelocity = new Vector2(0, 0);
             SetGravityScale(0);
+            _slopeCheckDistance = 1.5f;
             //Debug.Log("On slope, no input");
         }
         else //Move along slope if on a slope
         {
             SetGravityScale(0);
+            _slopeCheckDistance = 1.5f;
+
             //if (!WasOnSlope)
             //{
             //    //Data.doConserveMomentum = false;
@@ -808,6 +812,7 @@ public class PlayerMovementWithDash : MonoBehaviour
             IsGrounded = false;
             _onSlope = false;
             _slopeAngle = 0f;
+            //_slopeCheckDistance = 1f;
         }
     }
     public void CheckDirectionToFace(bool isMovingRight)
