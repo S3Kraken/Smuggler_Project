@@ -254,7 +254,8 @@ MonoBehaviour:
   heavyData: {fileID: 11400000, guid: a4f07b1ad646ff74d9078e9a12fc8b09, type: 2}
   jumpFX: {fileID: 3805328214224085407, guid: 2f4207726de50db4da322efdd6f1fcb4, type: 3}
   _slopeCheckDistance: 1
-  showVelocity: 1
+  showVelocity: 0
+  startFlipped: 0
   _groundCheckPoint: {fileID: 9001577054107599089}
   _groundCheckSize: {x: 0.49, y: 0.03}
   _frontWallCheckPoint: {fileID: 2807238257319320793}
@@ -337,6 +338,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc6b4eca235c37f46955a69a70cb6c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeElapsed: 0
+  timer: {fileID: 0}
 --- !u!114 &6117430093449221919
 MonoBehaviour:
   m_ObjectHideFlags: 0

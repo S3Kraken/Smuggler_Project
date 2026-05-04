@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +16,10 @@ public class PlayerHealth : MonoBehaviour
     bool alphaReset = false;
     GameObject shield;
     GameObject activeShield;
+
+    [HideInInspector] public float timeElapsed = 0f;
+    [SerializeField] TextMeshProUGUI timer;
+
 
     private void Awake()
     {
@@ -46,18 +51,12 @@ public class PlayerHealth : MonoBehaviour
             EndFlicker();
         }
 
-        //remove later
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (SceneManager.GetActiveScene().buildIndex == 0)
-            {
-                SceneManager.LoadScene(1);
-            }
-            else
-            {
-                SceneManager.LoadScene(0);
-            }
-        }
+
+        //update timer
+        timeElapsed += Time.deltaTime;
+        int minutes = Mathf.FloorToInt(timeElapsed / 60F);
+        int seconds = Mathf.FloorToInt(timeElapsed - minutes * 60);
+        timer.text = string.Format("Time: {0:0}:{1:00}", minutes, seconds);
     }
     public void Heal(float amount)
     {
