@@ -14,7 +14,6 @@ public class SongPlayer : MonoBehaviour
 
     public void SetMusic()
     {
-        Debug.Log("Running set music");
         aud = GetComponent<AudioSource>();
         if (SceneManager.GetActiveScene().buildIndex == 0) //Mainmenu
         {
