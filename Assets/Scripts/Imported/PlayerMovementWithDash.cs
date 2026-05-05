@@ -129,7 +129,6 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     private void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             weight = "light";
@@ -173,7 +172,7 @@ public class PlayerMovementWithDash : MonoBehaviour
             OnJumpUpInput();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Mouse0) && !GameManager.paused)
         {
             OnDashInput();
         }
@@ -276,7 +275,7 @@ public class PlayerMovementWithDash : MonoBehaviour
         #endregion
 
         #region DASH CHECKS
-        if (CanDash() && LastPressedDashTime > 0)
+        if (CanDash() && LastPressedDashTime > 0 && !GameManager.paused)
         {
             //Freeze game for split second. Adds juiciness and a bit of forgiveness over directional input
             //Sleep(Data.dashSleepTime);
@@ -536,12 +535,15 @@ public class PlayerMovementWithDash : MonoBehaviour
             // Ensure slopeNormalPerp is a unit tangent that points the same way as positive move input (right along the slope)
             Vector2 tangent = _slopeNormalPerp.normalized;
 
+
+            float downhillSign = Mathf.Sign(-_slopeNormalPerp.y);
+
             // signed target speed along tangent (preserve input sign)
             float targetSpeedAlongSlope = currentData.runMaxSpeed * -_moveInput.x;
 
             //Speed up my the slope multiplier if sliding down
             if (IsSlopeSliding)
-                targetSpeedAlongSlope = currentData.runMaxSpeed * -currentData.slopeSlideSpeedMultiplier;
+                targetSpeedAlongSlope = currentData.runMaxSpeed * currentData.slopeSlideSpeedMultiplier * downhillSign;
 
             // current velocity projected onto tangent (signed)
             float currentSpeedAlongSlope = Vector2.Dot(RB.linearVelocity, tangent);
@@ -812,7 +814,6 @@ public class PlayerMovementWithDash : MonoBehaviour
             _onSlope = _slopeAngle > 1f;
             OnDownhillSlope = (_slopeNormalPerp.y > 0f && _moveInput.x > 0f) || (_slopeNormalPerp.y < 0f && _moveInput.x < 0f);
 
-
             //Debug.Log($"Grounded on {hit.collider.name}");
             // Slope info
             //Debug.Log($"Hit: {hit.collider.name} at distance {hit.distance}");
@@ -835,7 +836,7 @@ public class PlayerMovementWithDash : MonoBehaviour
     }
     public void CheckDirectionToFace(bool isMovingRight)
     {
-        if (isMovingRight != IsFacingRight && !IsSlopeSliding)
+        if (isMovingRight != IsFacingRight && !IsSlopeSliding && !GameManager.paused)
             Turn();
     }
 
@@ -862,7 +863,7 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     private bool CanDash()
     {
-        if (!IsDashing && _dashesLeft < currentData.dashAmount && LastOnGroundTime > 0 && !_dashRefilling)
+        if (!IsDashing && _dashesLeft < currentData.dashAmount && LastOnGroundTime > 0 && !_dashRefilling && !GameManager.paused)
         {
             StartCoroutine(nameof(RefillDash), 1);
         }

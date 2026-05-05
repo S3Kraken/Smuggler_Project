@@ -11,6 +11,7 @@ public class BombGoblin : MonoBehaviour
     Transform player;
     [SerializeField] GameObject bomb;
     Animator anim;
+    [SerializeField] bool justIdle;
 
     float lockState = 0;
     float attackCooldown = 5f;
@@ -33,6 +34,12 @@ public class BombGoblin : MonoBehaviour
         lockState -= Time.deltaTime;
         attackCooldown -= Time.deltaTime;
         CheckFacingDirection();
+
+        if (justIdle)
+        {
+            Idle();
+            return;
+        }
 
         if (lockState > 0)
         {

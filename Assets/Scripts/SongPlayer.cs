@@ -21,7 +21,7 @@ public class SongPlayer : MonoBehaviour
         }
         else if (SceneManager.GetActiveScene().buildIndex == 1) //Tutorial
         {
-            aud.clip = Resources.Load<AudioClip>("Music/");
+            aud.clip = Resources.Load<AudioClip>("Music/Ninjala_OST_Closet");
         }
         else if (SceneManager.GetActiveScene().buildIndex == 2) //RoofTops
         {
