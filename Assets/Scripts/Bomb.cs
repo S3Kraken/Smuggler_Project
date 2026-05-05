@@ -51,7 +51,6 @@ public class Bomb : MonoBehaviour
             Vector2 direction = (transform.position + new Vector3(15 * facing.x, 5, 0) - transform.position).normalized;
             rb.linearVelocity = direction * 10f;
             anim.CrossFade("Thrown", 0, 0);
-            Debug.Log("Launched bomb in direction: " + facing);
         }
     }
     public IEnumerator Grounded()
