@@ -21,18 +21,24 @@ public class KnifeGoblin : MonoBehaviour
     float chaseSpeed = 7;
     [SerializeField] float walkRange = 10f;
 
-
     bool patrolingToSpawn;
     bool patrolingLeft;
     bool patrolingRight;
     bool idleDone = true;
     bool attackIsDone = true;
 
+    Collider2D playerCol;
+    [SerializeField] Collider2D solidCol;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
         player = GameObject.Find("Player").GetComponent<Transform>();
         anim = GetComponent<Animator>();
+
+        playerCol = GameObject.FindWithTag("Player").GetComponent<Collider2D>();
+        Physics2D.IgnoreCollision(playerCol, solidCol, true);
+
     }
     void Start()
     {
