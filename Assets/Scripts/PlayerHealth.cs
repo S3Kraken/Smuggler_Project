@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,10 +17,6 @@ public class PlayerHealth : MonoBehaviour
     bool alphaReset = false;
     GameObject shield;
     GameObject activeShield;
-
-    [HideInInspector] public float timeElapsed = 0f;
-    [SerializeField] TextMeshProUGUI timer;
-
 
     private void Awake()
     {
@@ -50,13 +47,6 @@ public class PlayerHealth : MonoBehaviour
             alphaReset = true;
             EndFlicker();
         }
-
-
-        //update timer
-        timeElapsed += Time.deltaTime;
-        int minutes = Mathf.FloorToInt(timeElapsed / 60F);
-        int seconds = Mathf.FloorToInt(timeElapsed - minutes * 60);
-        timer.text = string.Format("Time: {0:0}:{1:00}", minutes, seconds);
     }
     public void Heal(float amount)
     {
@@ -69,7 +59,7 @@ public class PlayerHealth : MonoBehaviour
     }
     public void TakeDamage(float amount)
     {
-        
+
         if (iFrames <= 0)
         {
             //Gives the player 3 secs of Iframes

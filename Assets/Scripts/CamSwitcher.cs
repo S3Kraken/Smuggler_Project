@@ -17,18 +17,18 @@ public class CamSwitcher : MonoBehaviour
     }
      void OnToggleCam()
     {
-        if (mainCam.activeSelf)
-        {
-            mainCam.SetActive(false);
-            panCam.SetActive(true);
-            panModeActive = true;
-            panCam.GetComponent<PanCamScript>().ResetSpeed();
-        }
-        else
-        {
-            mainCam.SetActive(true);
-            panCam.SetActive(false);
-            panModeActive = false;
-        }
+        //if (mainCam.activeSelf)
+        //{
+        //    mainCam.SetActive(false);
+        //    panCam.SetActive(true);
+        //    panModeActive = true;
+        //    panCam.GetComponent<PanCamScript>().ResetSpeed();
+        //}
+        //else
+        //{
+        //    mainCam.SetActive(true);
+        //    panCam.SetActive(false);
+        //    panModeActive = false;
+        //}
     }
 }
