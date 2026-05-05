@@ -45,6 +45,8 @@ public class PlayerMovementWithDash : MonoBehaviour
     public float LastOnWallTime { get; private set; }
     public float LastOnWallRightTime { get; private set; }
     public float LastOnWallLeftTime { get; private set; }
+    public float changeWeightTimer { get; private set; }
+
 
     //Jump
     private bool _isJumpCut;
@@ -62,6 +64,8 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     //Slopes
     string weight = "light"; // "light", "medium", "heavy"
+    public float changeWeightCooldown { get; private set; } = 5f;
+
     private bool _onSlope;
     private float _slopeAngle;
     private Vector2 _slopeNormalPerp;
@@ -121,6 +125,7 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     private void Start()
     {
+        changeWeightTimer = 0;
         SetGravityScale(currentData.gravityScale);
         IsFacingRight = true;
         if (startFlipped)
@@ -129,31 +134,37 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            weight = "light";
-            SetWeight();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            weight = "medium";
-            SetWeight();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            weight = "heavy";
-            SetWeight();
-        }
+        
 
         #region TIMERS
         LastOnGroundTime -= Time.deltaTime;
         LastOnWallTime -= Time.deltaTime;
         LastOnWallRightTime -= Time.deltaTime;
         LastOnWallLeftTime -= Time.deltaTime;
+        changeWeightTimer -= Time.deltaTime;
 
         LastPressedJumpTime -= Time.deltaTime;
         LastPressedDashTime -= Time.deltaTime;
         #endregion
+
+        if (changeWeightTimer < 0)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                weight = "light";
+                SetWeight();
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                weight = "medium";
+                SetWeight();
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                weight = "heavy";
+                SetWeight();
+            }
+        }
 
         #region INPUT HANDLER
         _moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -735,19 +746,22 @@ public class PlayerMovementWithDash : MonoBehaviour
 
     public void ChangeWeight()
     {
-        if (weight == "light")
+        if (changeWeightTimer < 0)
         {
-            weight = "medium";
+            if (weight == "light")
+            {
+                weight = "medium";
+            }
+            else if (weight == "medium")
+            {
+                weight = "heavy";
+            }
+            else
+            {
+                weight = "light";
+            }
+            SetWeight();
         }
-        else if (weight == "medium")
-        {
-            weight = "heavy";
-        }
-        else
-        {
-            weight = "light";
-        }
-        SetWeight();
     }
 
     private void SetWeight()
@@ -759,6 +773,7 @@ public class PlayerMovementWithDash : MonoBehaviour
             case "heavy": currentData = heavyData; break;
         }
         ChangeWeightButtonText.text = weight;
+        changeWeightTimer = changeWeightCooldown;
     }
     #endregion
 
