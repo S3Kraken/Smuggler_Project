@@ -6,8 +6,7 @@ public class PanCamScript : MonoBehaviour
     float movex, movey;
     Vector2 smoothVelocity = Vector2.zero;
     float speed = 30;
-    public GameObject mainCam;
-    GameObject player;
+    [SerializeField] GameObject player;
 
     public InputActionAsset inputActions;
     private InputAction moveAction;
@@ -74,6 +73,7 @@ public class PanCamScript : MonoBehaviour
 
     public void ResetSpeed()
     {
+        player = GameObject.Find("Player");
         smoothVelocity = Vector2.zero;
         this.transform.position = new Vector3(
         player.transform.position.x,

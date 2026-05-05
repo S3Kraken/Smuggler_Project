@@ -19,6 +19,7 @@ public class KnifeGoblin : MonoBehaviour
     float lastXPos;
     float speed = 3;
     float chaseSpeed = 7;
+    [SerializeField] float walkRange = 10f;
 
 
     bool patrolingToSpawn;
@@ -36,8 +37,8 @@ public class KnifeGoblin : MonoBehaviour
     void Start()
     {
         spawnLoc = transform.position;
-        leftEdge = new Vector2(transform.position.x - 10, transform.position.y);
-        rightEdge = new Vector2(transform.position.x + 10, transform.position.y);
+        leftEdge = new Vector2(transform.position.x - walkRange, transform.position.y);
+        rightEdge = new Vector2(transform.position.x + walkRange, transform.position.y);
     }
 
     // Update is called once per frame
